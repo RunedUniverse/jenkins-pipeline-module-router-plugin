@@ -1,28 +1,41 @@
+<!--
+
+    Copyright © 2024 VenaNocta (venanocta@gmail.com)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
 <project-execution-model
 	xmlns="https://api.runeduniverse.net/runes4tools/r4m-pem"
 	xsi:schemaLocation="https://api.runeduniverse.net/runes4tools/r4m-pem https://api.runeduniverse.net/runes4tools/r4m-pem-v1_0_0.xsd"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>1.0.0</modelVersion>
 	<executions>
-		<execution source="packaging" id="default-install">
-			<restrictions>
-				<packaging-procedure>pom</packaging-procedure>
-			</restrictions>
+		<execution id="default" source="override">
 			<triggers>
-				<default />
+				<active-profile id="license-check" />
 			</triggers>
 			<lifecycles>
 				<lifecycle id="default">
 					<phases>
-						<phase id="install">
+						<phase id="validate">
 							<goals>
-								<goal id="install">
-									<groupId>org.apache.maven.plugins</groupId>
-									<artifactId>maven-install-plugin</artifactId>
+								<goal id="check">
 									<modes>
 										<default />
-										<dev />
 									</modes>
+									<groupId>com.mycila</groupId>
+									<artifactId>license-maven-plugin</artifactId>
 								</goal>
 							</goals>
 						</phase>
@@ -30,215 +43,15 @@
 				</lifecycle>
 			</lifecycles>
 		</execution>
-		<execution source="override" id="default-install">
-			<inherited>false</inherited>
+
+		<execution source="override" id="default">
 			<triggers>
-				<default />
-			</triggers>
-			<lifecycles>
-				<lifecycle id="default">
-					<phases>
-						<phase id="install">
-							<goals>
-								<goal id="install">
-									<groupId>org.apache.maven.plugins</groupId>
-									<artifactId>maven-install-plugin</artifactId>
-									<modes>
-										<default />
-										<dev />
-									</modes>
-								</goal>
-							</goals>
-						</phase>
-					</phases>
-				</lifecycle>
-			</lifecycles>
-		</execution>
-		<execution source="packaging" id="default-deploy">
-			<restrictions>
-				<packaging-procedure>pom</packaging-procedure>
-			</restrictions>
-			<triggers>
-				<default />
-			</triggers>
-			<lifecycles>
-				<lifecycle id="default">
-					<phases>
-						<phase id="deploy">
-							<goals>
-								<goal id="deploy">
-									<groupId>org.apache.maven.plugins</groupId>
-									<artifactId>maven-deploy-plugin</artifactId>
-									<modes>
-										<default />
-										<dev />
-									</modes>
-								</goal>
-							</goals>
-						</phase>
-					</phases>
-				</lifecycle>
-				<lifecycle id="site">
-					<phases>
-						<phase id="site-deploy">
-							<goals>
-								<goal id="deploy">
-									<groupId>org.apache.maven.plugins</groupId>
-									<artifactId>maven-site-plugin</artifactId>
-									<modes>
-										<default />
-										<dev />
-									</modes>
-								</goal>
-							</goals>
-						</phase>
-					</phases>
-				</lifecycle>
-			</lifecycles>
-		</execution>
-		<execution source="override" id="default-deploy">
-			<inherited>false</inherited>
-			<triggers>
-				<default />
-			</triggers>
-			<lifecycles>
-				<lifecycle id="default">
-					<phases>
-						<phase id="deploy">
-							<goals>
-								<goal id="deploy">
-									<groupId>org.apache.maven.plugins</groupId>
-									<artifactId>maven-deploy-plugin</artifactId>
-									<modes>
-										<default />
-										<dev />
-									</modes>
-								</goal>
-							</goals>
-						</phase>
-					</phases>
-				</lifecycle>
-				<lifecycle id="site">
-					<phases>
-						<phase id="site-deploy">
-							<goals>
-								<goal id="deploy">
-									<groupId>org.apache.maven.plugins</groupId>
-									<artifactId>maven-site-plugin</artifactId>
-									<modes>
-										<default />
-										<dev />
-									</modes>
-								</goal>
-							</goals>
-						</phase>
-					</phases>
-				</lifecycle>
-			</lifecycles>
-		</execution>
-		<execution source="packaging" id="default-site">
-			<restrictions>
-				<packaging-procedure>pom</packaging-procedure>
-			</restrictions>
-			<triggers>
-				<default />
-			</triggers>
-			<lifecycles>
-				<lifecycle id="site">
-					<phases>
-						<phase id="site">
-							<goals>
-								<goal id="site">
-									<groupId>org.apache.maven.plugins</groupId>
-									<artifactId>maven-site-plugin</artifactId>
-									<modes>
-										<default />
-										<dev />
-									</modes>
-								</goal>
-							</goals>
-						</phase>
-					</phases>
-				</lifecycle>
-			</lifecycles>
-		</execution>
-		<execution source="override" id="default-site">
-			<inherited>false</inherited>
-			<triggers>
-				<default />
-			</triggers>
-			<lifecycles>
-				<lifecycle id="site">
-					<phases>
-						<phase id="site">
-							<goals>
-								<goal id="site">
-									<groupId>org.apache.maven.plugins</groupId>
-									<artifactId>maven-site-plugin</artifactId>
-									<modes>
-										<default />
-										<dev />
-									</modes>
-								</goal>
-							</goals>
-						</phase>
-					</phases>
-				</lifecycle>
-			</lifecycles>
-		</execution>
-		<execution source="packaging" id="default-clean">
-			<restrictions>
-				<packaging-procedure>pom</packaging-procedure>
-			</restrictions>
-			<triggers>
-				<default />
-			</triggers>
-			<lifecycles>
-				<lifecycle id="clean">
-					<phases>
-						<phase id="clean">
-							<goals>
-								<goal id="clean">
-									<groupId>org.apache.maven.plugins</groupId>
-									<artifactId>maven-clean-plugin</artifactId>
-									<modes>
-										<default />
-										<dev />
-									</modes>
-								</goal>
-							</goals>
-						</phase>
-					</phases>
-				</lifecycle>
-			</lifecycles>
-		</execution>
-		<execution source="override" id="default-clean">
-			<inherited>false</inherited>
-			<triggers>
-				<default />
-			</triggers>
-			<lifecycles>
-				<lifecycle id="clean">
-					<phases>
-						<phase id="clean">
-							<goals>
-								<goal id="clean">
-									<groupId>org.apache.maven.plugins</groupId>
-									<artifactId>maven-clean-plugin</artifactId>
-									<modes>
-										<default />
-										<dev />
-									</modes>
-								</goal>
-							</goals>
-						</phase>
-					</phases>
-				</lifecycle>
-			</lifecycles>
-		</execution>
-		<execution source="plugin" id="default">
-			<triggers>
-				<default />
+				<active-profile id="dev-install" />
+				<active-profile id="format" />
+				<missing-profile id="install" />
+				<missing-profile id="test-junit-jupiter" />
+				<missing-profile id="deploy" />
+				<missing-profile id="deploy-signed" />
 			</triggers>
 			<lifecycles>
 				<lifecycle id="help">
@@ -265,21 +78,13 @@
 						</phase>
 					</phases>
 				</lifecycle>
-			</lifecycles>
-		</execution>
-		<execution source="override" id="default">
-			<inherited>false</inherited>
-			<triggers>
-				<default />
-			</triggers>
-			<lifecycles>
-				<lifecycle id="default">
+				<lifecycle id="clean">
 					<phases>
-						<phase id="prepare-package">
+						<phase id="clean">
 							<goals>
-								<goal id="process">
-									<groupId>io.jenkins.tools.maven</groupId>
-									<artifactId>license-maven-plugin</artifactId>
+								<goal id="clean">
+									<groupId>org.apache.maven.plugins</groupId>
+									<artifactId>maven-clean-plugin</artifactId>
 									<modes>
 										<default />
 										<dev />
@@ -287,6 +92,10 @@
 								</goal>
 							</goals>
 						</phase>
+					</phases>
+				</lifecycle>
+				<lifecycle id="default">
+					<phases>
 						<phase id="validate">
 							<goals>
 								<goal id="toolchain">
@@ -297,13 +106,178 @@
 										<dev />
 									</modes>
 								</goal>
+								<goal id="format">
+									<modes>
+										<default />
+										<dev />
+										<format />
+									</modes>
+									<groupId>net.revelc.code.formatter</groupId>
+									<artifactId>formatter-maven-plugin</artifactId>
+								</goal>
+								<goal id="format">
+									<modes>
+										<default />
+										<dev />
+										<format />
+									</modes>
+									<groupId>com.mycila</groupId>
+									<artifactId>license-maven-plugin</artifactId>
+								</goal>
 							</goals>
 						</phase>
-						<phase id="verify">
+						<phase id="install">
 							<goals>
-								<goal id="check">
-									<groupId>com.diffplug.spotless</groupId>
-									<artifactId>spotless-maven-plugin</artifactId>
+								<goal id="install">
+									<groupId>org.apache.maven.plugins</groupId>
+									<artifactId>maven-install-plugin</artifactId>
+									<modes>
+										<default />
+										<dev />
+									</modes>
+								</goal>
+							</goals>
+						</phase>
+						<phase id="deploy">
+							<goals>
+								<!-- attach-artifact could be removed -->
+								<!-- if maven could cache more effective -->
+								<goal id="attach-artifact">
+									<modes>
+										<default />
+										<dev />
+									</modes>
+									<groupId>org.codehaus.mojo</groupId>
+									<artifactId>build-helper-maven-plugin</artifactId>
+								</goal>
+								<goal id="deploy">
+									<groupId>org.apache.maven.plugins</groupId>
+									<artifactId>maven-deploy-plugin</artifactId>
+									<modes>
+										<default />
+										<dev />
+									</modes>
+								</goal>
+							</goals>
+						</phase>
+					</phases>
+				</lifecycle>
+			</lifecycles>
+		</execution>
+
+		<execution source="override" id="default">
+			<triggers>
+				<active-profile id="dev-install" />
+				<active-profile id="format" />
+				<missing-profile id="install" />
+				<missing-profile id="test-junit-jupiter" />
+				<missing-profile id="deploy" />
+				<missing-profile id="deploy-signed" />
+			</triggers>
+			<restrictions>
+				<packaging-procedure>jar</packaging-procedure>
+				<packaging-procedure>hpi</packaging-procedure>
+			</restrictions>
+			<lifecycles>
+				<lifecycle id="default">
+					<phases>
+						<phase id="process-resources">
+							<goals>
+								<goal id="resources">
+									<groupId>org.apache.maven.plugins</groupId>
+									<artifactId>maven-resources-plugin</artifactId>
+									<modes>
+										<default />
+										<dev />
+									</modes>
+								</goal>
+							</goals>
+						</phase>
+						<phase id="process-test-resources">
+							<goals>
+								<goal id="testResources">
+									<groupId>org.apache.maven.plugins</groupId>
+									<artifactId>maven-resources-plugin</artifactId>
+									<modes>
+										<default />
+										<dev />
+									</modes>
+								</goal>
+							</goals>
+						</phase>
+						<phase id="package">
+							<goals>
+								<goal id="jar">
+									<groupId>org.apache.maven.plugins</groupId>
+									<artifactId>maven-jar-plugin</artifactId>
+									<modes>
+										<default />
+										<dev />
+									</modes>
+								</goal>
+							</goals>
+						</phase>
+						<phase id="compile">
+							<goals>
+								<goal id="compile">
+									<groupId>org.apache.maven.plugins</groupId>
+									<artifactId>maven-compiler-plugin</artifactId>
+									<modes>
+										<default />
+										<dev />
+									</modes>
+								</goal>
+							</goals>
+						</phase>
+						<phase id="test-compile">
+							<goals>
+								<goal id="testCompile">
+									<groupId>org.apache.maven.plugins</groupId>
+									<artifactId>maven-compiler-plugin</artifactId>
+									<modes>
+										<default />
+										<dev />
+									</modes>
+								</goal>
+							</goals>
+						</phase>
+						<phase id="test">
+							<goals>
+								<goal id="test">
+									<groupId>org.apache.maven.plugins</groupId>
+									<artifactId>maven-surefire-plugin</artifactId>
+									<modes>
+										<default />
+										<dev />
+									</modes>
+								</goal>
+							</goals>
+						</phase>
+					</phases>
+				</lifecycle>
+			</lifecycles>
+		</execution>
+
+		<execution source="override" id="default">
+			<triggers>
+				<active-profile id="dev-install" />
+				<active-profile id="format" />
+				<missing-profile id="install" />
+				<missing-profile id="test-junit-jupiter" />
+				<missing-profile id="deploy" />
+				<missing-profile id="deploy-signed" />
+			</triggers>
+			<restrictions>
+				<packaging-procedure>hpi</packaging-procedure>
+			</restrictions>
+			<lifecycles>
+				<lifecycle id="default">
+					<phases>
+						<phase id="validate">
+							<goals>
+								<goal id="validate">
+									<groupId>org.jenkins-ci.tools</groupId>
+									<artifactId>maven-hpi-plugin</artifactId>
 									<modes>
 										<default />
 										<dev />
@@ -323,15 +297,138 @@
 								</goal>
 							</goals>
 						</phase>
+						<phase id="generate-test-sources">
+							<goals>
+								<goal id="insert-test">
+									<groupId>org.jenkins-ci.tools</groupId>
+									<artifactId>maven-hpi-plugin</artifactId>
+									<modes>
+										<default />
+										<dev />
+									</modes>
+								</goal>
+							</goals>
+						</phase>
+						<phase id="process-classes">
+							<goals>
+								<goal id="enforce">
+									<groupId>org.kohsuke</groupId>
+									<artifactId>access-modifier-checker</artifactId>
+									<modes>
+										<default />
+										<dev />
+									</modes>
+								</goal>
+							</goals>
+						</phase>
+						<phase id="process-test-classes">
+							<goals>
+								<goal id="test-runtime">
+									<groupId>org.jenkins-ci.tools</groupId>
+									<artifactId>maven-hpi-plugin</artifactId>
+									<modes>
+										<default />
+										<dev />
+									</modes>
+								</goal>
+							</goals>
+						</phase>
+						<phase id="test-compile">
+							<goals>
+								<goal id="resolve-test-dependencies">
+									<groupId>org.jenkins-ci.tools</groupId>
+									<artifactId>maven-hpi-plugin</artifactId>
+									<modes>
+										<default />
+										<dev />
+									</modes>
+								</goal>
+								<goal id="test-hpl">
+									<groupId>org.jenkins-ci.tools</groupId>
+									<artifactId>maven-hpi-plugin</artifactId>
+									<modes>
+										<default />
+										<dev />
+									</modes>
+								</goal>
+							</goals>
+						</phase>
+						<phase id="prepare-package">
+							<goals>
+								<goal id="process">
+									<groupId>io.jenkins.tools.maven</groupId>
+									<artifactId>license-maven-plugin</artifactId>
+									<modes>
+										<default />
+										<dev />
+									</modes>
+								</goal>
+							</goals>
+						</phase>
+						<phase id="package">
+							<goals>
+								<goal id="hpi">
+									<groupId>org.jenkins-ci.tools</groupId>
+									<artifactId>maven-hpi-plugin</artifactId>
+									<modes>
+										<default />
+										<dev />
+									</modes>
+								</goal>
+							</goals>
+						</phase>
+						<phase id="verify">
+							<goals>
+								<goal id="check">
+									<groupId>com.diffplug.spotless</groupId>
+									<artifactId>spotless-maven-plugin</artifactId>
+									<modes>
+										<default />
+										<dev />
+									</modes>
+								</goal>
+							</goals>
+						</phase>
+					</phases>
+				</lifecycle>
+				<lifecycle id="site">
+					<phases>
+						<phase id="site">
+							<goals>
+								<goal id="site">
+									<groupId>org.apache.maven.plugins</groupId>
+									<artifactId>maven-site-plugin</artifactId>
+									<modes>
+										<default />
+										<dev />
+									</modes>
+								</goal>
+							</goals>
+						</phase>
+						<phase id="site-deploy">
+							<goals>
+								<goal id="deploy">
+									<groupId>org.apache.maven.plugins</groupId>
+									<artifactId>maven-site-plugin</artifactId>
+									<modes>
+										<default />
+										<dev />
+									</modes>
+								</goal>
+							</goals>
+						</phase>
 					</phases>
 				</lifecycle>
 			</lifecycles>
 		</execution>
+
 		<execution source="override" id="maybe-test-jar">
-			<inherited>false</inherited>
 			<triggers>
-				<default />
+				<on-call />
 			</triggers>
+			<restrictions>
+				<packaging-procedure>hpi</packaging-procedure>
+			</restrictions>
 			<lifecycles>
 				<lifecycle id="default">
 					<phases>
@@ -351,11 +448,14 @@
 				</lifecycle>
 			</lifecycles>
 		</execution>
+
 		<execution source="override" id="flatten">
-			<inherited>false</inherited>
 			<triggers>
-				<default />
+				<on-call />
 			</triggers>
+			<restrictions>
+				<packaging-procedure>hpi</packaging-procedure>
+			</restrictions>
 			<lifecycles>
 				<lifecycle id="default">
 					<phases>
@@ -375,11 +475,14 @@
 				</lifecycle>
 			</lifecycles>
 		</execution>
+
 		<execution source="override" id="display-info">
-			<inherited>false</inherited>
 			<triggers>
-				<default />
+				<on-call />
 			</triggers>
+			<restrictions>
+				<packaging-procedure>hpi</packaging-procedure>
+			</restrictions>
 			<lifecycles>
 				<lifecycle id="default">
 					<phases>
@@ -399,11 +502,14 @@
 				</lifecycle>
 			</lifecycles>
 		</execution>
+
 		<execution source="override" id="no-snapshots-in-release">
-			<inherited>false</inherited>
 			<triggers>
-				<default />
+				<on-call />
 			</triggers>
+			<restrictions>
+				<packaging-procedure>hpi</packaging-procedure>
+			</restrictions>
 			<lifecycles>
 				<lifecycle id="default">
 					<phases>
@@ -423,11 +529,14 @@
 				</lifecycle>
 			</lifecycles>
 		</execution>
+
 		<execution source="override" id="spotbugs">
-			<inherited>false</inherited>
 			<triggers>
-				<default />
+				<on-call />
 			</triggers>
+			<restrictions>
+				<packaging-procedure>hpi</packaging-procedure>
+			</restrictions>
 			<lifecycles>
 				<lifecycle id="default">
 					<phases>
@@ -447,11 +556,14 @@
 				</lifecycle>
 			</lifecycles>
 		</execution>
+
 		<execution source="override" id="createTempDir">
-			<inherited>false</inherited>
 			<triggers>
-				<default />
+				<on-call />
 			</triggers>
+			<restrictions>
+				<packaging-procedure>hpi</packaging-procedure>
+			</restrictions>
 			<lifecycles>
 				<lifecycle id="default">
 					<phases>
