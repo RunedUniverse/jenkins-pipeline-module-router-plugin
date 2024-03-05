@@ -24,10 +24,5 @@
 		<artifactId>r4m-maven-extension</artifactId>
 		<version>1.0.0</version>
 	</extension>
-	<extension>
-		<groupId>io.jenkins.tools.incrementals</groupId>
-		<artifactId>git-changelist-maven-extension</artifactId>
-		<version>1.7</version>
-	</extension>
 </extensions>
 
