@@ -108,6 +108,11 @@
 		</dependency>
 
 		<!-- COMPILER -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
 		<!-- TEST -->
 		<dependency>
 			<groupId>org.jenkins-ci.plugins.workflow</groupId>

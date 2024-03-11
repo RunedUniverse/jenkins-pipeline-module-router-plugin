@@ -46,6 +46,7 @@
 
 		<execution source="override" id="default">
 			<triggers>
+				<default />
 				<active-profile id="dev-install" />
 				<active-profile id="format" />
 				<missing-profile id="install" />
@@ -167,6 +168,7 @@
 
 		<execution source="override" id="default">
 			<triggers>
+				<default />
 				<active-profile id="dev-install" />
 				<active-profile id="format" />
 				<missing-profile id="install" />
@@ -176,7 +178,6 @@
 			</triggers>
 			<restrictions>
 				<packaging-procedure>jar</packaging-procedure>
-				<packaging-procedure>hpi</packaging-procedure>
 			</restrictions>
 			<lifecycles>
 				<lifecycle id="default">
@@ -317,11 +318,75 @@
 								</goal>
 							</goals>
 						</phase>
+						<phase id="process-resources">
+							<goals>
+								<goal id="resources">
+									<groupId>org.apache.maven.plugins</groupId>
+									<artifactId>maven-resources-plugin</artifactId>
+									<modes>
+										<default />
+										<dev />
+									</modes>
+								</goal>
+							</goals>
+						</phase>
 						<phase id="process-classes">
 							<goals>
 								<goal id="enforce">
 									<groupId>org.kohsuke</groupId>
 									<artifactId>access-modifier-checker</artifactId>
+									<modes>
+										<default />
+										<dev />
+									</modes>
+								</goal>
+							</goals>
+						</phase>
+						<phase id="compile">
+							<goals>
+								<goal id="compile">
+									<groupId>org.apache.maven.plugins</groupId>
+									<artifactId>maven-compiler-plugin</artifactId>
+									<modes>
+										<default />
+										<dev />
+									</modes>
+								</goal>
+							</goals>
+						</phase>
+						<phase id="process-test-resources">
+							<goals>
+								<goal id="testResources">
+									<groupId>org.apache.maven.plugins</groupId>
+									<artifactId>maven-resources-plugin</artifactId>
+									<modes>
+										<default />
+										<dev />
+									</modes>
+								</goal>
+							</goals>
+						</phase>
+						<phase id="test-compile">
+							<goals>
+								<goal id="testCompile">
+									<groupId>org.apache.maven.plugins</groupId>
+									<artifactId>maven-compiler-plugin</artifactId>
+									<modes>
+										<default />
+										<dev />
+									</modes>
+								</goal>
+								<goal id="test-hpl">
+									<groupId>org.jenkins-ci.tools</groupId>
+									<artifactId>maven-hpi-plugin</artifactId>
+									<modes>
+										<default />
+										<dev />
+									</modes>
+								</goal>
+								<goal id="resolve-test-dependencies">
+									<groupId>org.jenkins-ci.tools</groupId>
+									<artifactId>maven-hpi-plugin</artifactId>
 									<modes>
 										<default />
 										<dev />
@@ -341,19 +406,11 @@
 								</goal>
 							</goals>
 						</phase>
-						<phase id="test-compile">
+						<phase id="test">
 							<goals>
-								<goal id="test-hpl">
-									<groupId>org.jenkins-ci.tools</groupId>
-									<artifactId>maven-hpi-plugin</artifactId>
-									<modes>
-										<default />
-										<dev />
-									</modes>
-								</goal>
-								<goal id="resolve-test-dependencies">
-									<groupId>org.jenkins-ci.tools</groupId>
-									<artifactId>maven-hpi-plugin</artifactId>
+								<goal id="test">
+									<groupId>org.apache.maven.plugins</groupId>
+									<artifactId>maven-surefire-plugin</artifactId>
 									<modes>
 										<default />
 										<dev />
@@ -494,7 +551,7 @@
 
 		<execution source="override" id="flatten">
 			<triggers>
-				<on-call />
+				<active-profile id="might-produce-incrementals" />
 			</triggers>
 			<restrictions>
 				<packaging-procedure>hpi</packaging-procedure>
@@ -548,6 +605,7 @@
 
 		<execution source="override" id="no-snapshots-in-release">
 			<triggers>
+				<default />
 				<on-call />
 			</triggers>
 			<restrictions>

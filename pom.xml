@@ -101,11 +101,6 @@
 		<plugin-maven-toolchains-version>3.1.0</plugin-maven-toolchains-version>
 		<plugin-mycila-license-version>4.2.rc1</plugin-mycila-license-version>
 		<plugin-maven-gpg-version>3.0.1</plugin-maven-gpg-version>
-		<!-- VERSIONS - TESTING -->
-		<junit-platform-launcher-version>1.8.2</junit-platform-launcher-version>
-		<junit-platform-runner-version>1.8.2</junit-platform-runner-version>
-		<junit-jupiter-api-version>5.8.2</junit-jupiter-api-version>
-		<junit-jupiter-engine-version>5.8.2</junit-jupiter-engine-version>
 	</properties>
 
 	<profiles>
@@ -196,7 +191,8 @@
 				<repository>
 					<id>runeduniverse-releases</id>
 					<url>
-						https://nexus.runeduniverse.net/repository/maven-releases/</url>
+						https://nexus.runeduniverse.net/repository/maven-releases/
+					</url>
 				</repository>
 				<repository>
 					<id>repo.jenkins-ci.org</id>
@@ -217,7 +213,8 @@
 				<repository>
 					<id>runeduniverse-development</id>
 					<url>
-						https://nexus.runeduniverse.net/repository/maven-development/</url>
+						https://nexus.runeduniverse.net/repository/maven-development/
+					</url>
 				</repository>
 			</repositories>
 		</profile>
@@ -231,7 +228,8 @@
 				<repository>
 					<id>runeduniverse-development</id>
 					<url>
-						https://nexus.runeduniverse.net/repository/maven-development/</url>
+						https://nexus.runeduniverse.net/repository/maven-development/
+					</url>
 				</repository>
 			</distributionManagement>
 		</profile>
@@ -305,30 +303,6 @@
 				<version>${lombok-version}</version>
 				<scope>provided</scope>
 			</dependency>
-			<dependency>
-				<groupId>org.junit.jupiter</groupId>
-				<artifactId>junit-jupiter-api</artifactId>
-				<version>${junit-jupiter-api-version}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.junit.jupiter</groupId>
-				<artifactId>junit-jupiter-engine</artifactId>
-				<version>${junit-jupiter-engine-version}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.junit.platform</groupId>
-				<artifactId>junit-platform-launcher</artifactId>
-				<version>${junit-platform-launcher-version}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.junit.platform</groupId>
-				<artifactId>junit-platform-runner</artifactId>
-				<version>${junit-platform-runner-version}</version>
-				<scope>test</scope>
-			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -362,10 +336,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -456,19 +426,6 @@
 						<dependencyExceptionMessage>1 or more dependencies got
 							rejected doe to invalid licenses! Contact the
 							Maintainer for a solution!</dependencyExceptionMessage>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<configuration>
-						<annotationProcessorPaths>
-							<path>
-								<groupId>org.projectlombok</groupId>
-								<artifactId>lombok</artifactId>
-								<version>${lombok-version}</version>
-							</path>
-						</annotationProcessorPaths>
 					</configuration>
 				</plugin>
 				<plugin>
