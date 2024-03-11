@@ -443,10 +443,12 @@
 							<licenseSet>
 								<header>${root-dir}/src/license/header.txt</header>
 								<excludes>
+									<exclude>.build/**</exclude>
 									<exclude>**/.mvn/repo/**</exclude>
 									<exclude>**/resources/**</exclude>
 									<exclude>**/license/**</exclude>
 									<exclude>**/target/**</exclude>
+									<exclude>work/**</exclude>
 								</excludes>
 							</licenseSet>
 						</licenseSets>
