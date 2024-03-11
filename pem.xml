@@ -273,6 +273,14 @@
 										<dev />
 									</modes>
 								</goal>
+								<goal id="validate-hpi">
+									<groupId>org.jenkins-ci.tools</groupId>
+									<artifactId>maven-hpi-plugin</artifactId>
+									<modes>
+										<default />
+										<dev />
+									</modes>
+								</goal>
 							</goals>
 						</phase>
 						<phase id="generate-sources">
