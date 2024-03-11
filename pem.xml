@@ -369,14 +369,18 @@
 						</phase>
 						<phase id="verify">
 							<goals>
-								<goal id="check">
-									<groupId>com.diffplug.spotless</groupId>
-									<artifactId>spotless-maven-plugin</artifactId>
-									<modes>
-										<default />
-										<dev />
-									</modes>
-								</goal>
+								<!-- Another plugin does that! -->
+								<!-- in case you want to enable it: -->
+								<!-- 1st make sure it doesn't fuck with the pom files!!! -->
+								<!-- -->
+								<!-- <goal id="check"> -->
+								<!-- <groupId>com.diffplug.spotless</groupId> -->
+								<!-- <artifactId>spotless-maven-plugin</artifactId> -->
+								<!-- <modes> -->
+								<!-- <default /> -->
+								<!-- <dev /> -->
+								<!-- </modes> -->
+								<!-- </goal> -->
 							</goals>
 						</phase>
 					</phases>
@@ -400,6 +404,37 @@
 								<goal id="deploy">
 									<groupId>org.apache.maven.plugins</groupId>
 									<artifactId>maven-site-plugin</artifactId>
+									<modes>
+										<default />
+										<dev />
+									</modes>
+								</goal>
+							</goals>
+						</phase>
+					</phases>
+				</lifecycle>
+			</lifecycles>
+		</execution>
+		<execution source="override" id="add-source">
+			<triggers>
+				<default />
+				<active-profile id="dev-install" />
+				<active-profile id="install" />
+				<missing-profile id="test-junit-jupiter" />
+				<missing-profile id="deploy" />
+				<missing-profile id="deploy-signed" />
+			</triggers>
+			<restrictions>
+				<packaging-procedure>hpi</packaging-procedure>
+			</restrictions>
+			<lifecycles>
+				<lifecycle id="default">
+					<phases>
+						<phase id="generate-sources">
+							<goals>
+								<goal id="add-source">
+									<groupId>org.codehaus.mojo</groupId>
+									<artifactId>build-helper-maven-plugin</artifactId>
 									<modes>
 										<default />
 										<dev />
@@ -549,6 +584,7 @@
 
 		<execution source="override" id="createTempDir">
 			<triggers>
+				<default />
 				<on-call />
 			</triggers>
 			<restrictions>

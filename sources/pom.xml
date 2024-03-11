@@ -74,6 +74,20 @@
 		</developer>
 	</developers>
 
+	<scm>
+		<url>
+			https://github.com/RunedUniverse/jenkins-pipeline-module-router-plugin</url>
+		<connection>
+			scm:git:https://github.com/RunedUniverse/jenkins-pipeline-module-router-plugin.git</connection>
+		<developerConnection>
+			scm:git:git@github.com:RunedUniverse/jenkins-pipeline-module-router-plugin.git</developerConnection>
+	</scm>
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>
+			https://github.com/RunedUniverse/jenkins-pipeline-module-router-plugin/issues</url>
+	</issueManagement>
+
 	<dependencyManagement>
 		<dependencies>
 			<!-- UTILS -->
