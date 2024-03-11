@@ -21,17 +21,17 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.jenkins-ci.plugins</groupId>
-		<artifactId>pipeline-multi-module-parent</artifactId>
+		<groupId>org.jenkins-ci.plugins.pipeline.module-router</groupId>
+		<artifactId>module-router-parent</artifactId>
 		<version>0.0.0</version>
 	</parent>
 
-	<artifactId>pipeline-multi-module-plugin</artifactId>
+	<artifactId>module-router-plugin</artifactId>
 	<version>${major-version}.${minor-version}.${artifact-version}</version>
 	<packaging>hpi</packaging>
 
-	<name>Jenkins - Pipeline Multi Module Plugin</name>
-	<url>https://github.com/RunedUniverse/jenkins-pipeline-multi-module-plugin</url>
+	<name>Jenkins - Pipeline Module Router Plugin</name>
+	<url>https://github.com/RunedUniverse/jenkins-pipeline-module-router-plugin</url>
 	<inceptionYear>2024</inceptionYear>
 
 	<properties>
@@ -41,6 +41,7 @@
 		<artifact-version>0</artifact-version>
 		<sources-version>0</sources-version>
 		<api-version>0</api-version>
+		<jenkins-tools-bom-version>2857.v01a_0144eb_20b_</jenkins-tools-bom-version>
 	</properties>
 
 	<licenses>
@@ -72,24 +73,28 @@
 
 	<scm>
 		<url>
-			https://github.com/RunedUniverse/jenkins-pipeline-multi-module-plugin</url>
+			https://github.com/RunedUniverse/jenkins-pipeline-module-router-plugin</url>
 		<connection>
-			scm:git:http://github.com/RunedUniverse/jenkins-pipeline-multi-module-plugin.git</connection>
+			scm:git:http://github.com/RunedUniverse/jenkins-pipeline-module-router-plugin.git</connection>
 		<developerConnection>
-			scm:git:git@github.com:RunedUniverse/jenkins-pipeline-multi-module-plugin.git</developerConnection>
+			scm:git:git@github.com:RunedUniverse/jenkins-pipeline-module-router-plugin.git</developerConnection>
 	</scm>
 	<issueManagement>
 		<system>GitHub Issues</system>
 		<url>
-			https://github.com/RunedUniverse/jenkins-pipeline-multi-module-plugin/issues</url>
+			https://github.com/RunedUniverse/jenkins-pipeline-module-router-plugin/issues</url>
 	</issueManagement>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.jenkins-ci.plugins</groupId>
-			<artifactId>pipeline-multi-module-api</artifactId>
+			<groupId>org.jenkins-ci.plugins.pipeline.module-router</groupId>
+			<artifactId>module-router-api</artifactId>
 			<version>${major-version}.${minor-version}.${api-version}</version>
 			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jenkins-ci.plugins</groupId>
+			<artifactId>structs</artifactId>
 		</dependency>
 
 		<!-- logging utilities-->
@@ -103,10 +108,7 @@
 		</dependency>
 
 		<!-- COMPILER -->
-		<dependency>
-			<groupId>org.jenkins-ci.plugins</groupId>
-			<artifactId>structs</artifactId>
-		</dependency>
+		<!-- TEST -->
 		<dependency>
 			<groupId>org.jenkins-ci.plugins.workflow</groupId>
 			<artifactId>workflow-basic-steps</artifactId>
@@ -132,8 +134,8 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>org.jenkins-ci.plugins</groupId>
-				<artifactId>pipeline-multi-module-bom-sources</artifactId>
+				<groupId>org.jenkins-ci.plugins.pipeline.module-router</groupId>
+				<artifactId>module-router-bom-sources</artifactId>
 				<version>${major-version}.${minor-version}.${sources-version}</version>
 				<type>pom</type>
 				<scope>import</scope>
@@ -143,7 +145,7 @@
 				<!-- https://github.com/jenkinsci/bom#usage -->
 				<groupId>io.jenkins.tools.bom</groupId>
 				<artifactId>bom-2.426.x</artifactId>
-				<version>2857.v01a_0144eb_20b_</version>
+				<version>${jenkins-tools-bom-version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>

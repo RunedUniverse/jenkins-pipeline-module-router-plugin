@@ -21,18 +21,18 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.jenkins-ci.plugins</groupId>
-		<artifactId>pipeline-multi-module-parent</artifactId>
+		<groupId>org.jenkins-ci.plugins.pipeline.module-router</groupId>
+		<artifactId>module-router-parent</artifactId>
 		<version>0.0.0</version>
 	</parent>
 
-	<artifactId>pipeline-multi-module-bom-sources</artifactId>
+	<artifactId>module-router-bom-sources</artifactId>
 	<version>${major-version}.${minor-version}.${artifact-version}</version>
 	<packaging>pom</packaging>
 
-	<name>Jenkins - Pipeline Multi Module Plugin - Bill of Sources</name>
-	<url>https://github.com/RunedUniverse/r4m-maven-extension</url>
-	<inceptionYear>2022</inceptionYear>
+	<name>Jenkins - Pipeline Module Router Plugin - Bill of Sources</name>
+	<url>https://github.com/RunedUniverse/jenkins-pipeline-module-router-plugin</url>
+	<inceptionYear>2024</inceptionYear>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -94,13 +94,6 @@
 			</dependency>
 
 			<!-- COMPILER -->
-			<!-- dependency for plexus annotation -->
-			<dependency>
-				<groupId>org.codehaus.plexus</groupId>
-				<artifactId>plexus-component-annotations</artifactId>
-				<version>${plexus-component-version}</version>
-				<scope>provided</scope>
-			</dependency>
 		</dependencies>
 	</dependencyManagement>
 

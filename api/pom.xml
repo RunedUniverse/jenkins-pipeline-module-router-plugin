@@ -21,17 +21,17 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.jenkins-ci.plugins</groupId>
-		<artifactId>pipeline-multi-module-parent</artifactId>
+		<groupId>org.jenkins-ci.plugins.pipeline.module-router</groupId>
+		<artifactId>module-router-parent</artifactId>
 		<version>0.0.0</version>
 	</parent>
 
-	<artifactId>pipeline-multi-module-api</artifactId>
+	<artifactId>module-router-api</artifactId>
 	<version>${major-version}.${minor-version}.${artifact-version}</version>
 	<packaging>jar</packaging>
 
-	<name>Jenkins - Pipeline Multi Module Plugin - API</name>
-	<url>https://github.com/RunedUniverse/jenkins-pipeline-multi-module-plugin</url>
+	<name>Jenkins - Pipeline Module Router Plugin - API</name>
+	<url>https://github.com/RunedUniverse/jenkins-pipeline-module-router-plugin</url>
 	<inceptionYear>2024</inceptionYear>
 
 	<properties>
@@ -71,39 +71,31 @@
 
 	<scm>
 		<url>
-			https://github.com/RunedUniverse/jenkins-pipeline-multi-module-plugin</url>
+			https://github.com/RunedUniverse/jenkins-pipeline-module-router-plugin</url>
 		<connection>
-			scm:git:http://github.com/RunedUniverse/jenkins-pipeline-multi-module-plugin.git</connection>
+			scm:git:http://github.com/RunedUniverse/jenkins-pipeline-module-router-plugin.git</connection>
 		<developerConnection>
-			scm:git:git@github.com:RunedUniverse/jenkins-pipeline-multi-module-plugin.git</developerConnection>
+			scm:git:git@github.com:RunedUniverse/jenkins-pipeline-module-router-plugin.git</developerConnection>
 	</scm>
 	<issueManagement>
 		<system>GitHub Issues</system>
 		<url>
-			https://github.com/RunedUniverse/jenkins-pipeline-multi-module-plugin/issues</url>
+			https://github.com/RunedUniverse/jenkins-pipeline-module-router-plugin/issues</url>
 	</issueManagement>
 
 	<dependencies>
 		<!-- logging utilities-->
 		<dependency>
 			<groupId>net.runeduniverse.lib.utils</groupId>
-			<artifactId>utils-common</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>net.runeduniverse.lib.utils</groupId>
 			<artifactId>utils-logging</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>net.runeduniverse.lib.utils</groupId>
-			<artifactId>utils-maven</artifactId>
 		</dependency>
 	</dependencies>
 
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>org.jenkins-ci.plugins</groupId>
-				<artifactId>pipeline-multi-module-bom-sources</artifactId>
+				<groupId>org.jenkins-ci.plugins.pipeline.module-router</groupId>
+				<artifactId>module-router-bom-sources</artifactId>
 				<version>${major-version}.${minor-version}.${sources-version}</version>
 				<type>pom</type>
 				<scope>import</scope>

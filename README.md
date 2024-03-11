@@ -1,7 +1,7 @@
 # This plugin is still work in progress!
 
-# Jenkins: pipeline-multi-module-plugin
-This plugin will provide a distinctive way to define & discover projects in the pipeline.
+# Jenkins: pipeline-module-router-plugin
+This plugin will provide a distinctive way to define & discover multiple projects in the same pipeline, hereafter referenced as module.
 All projects found can than be activated or deactivated on individual conditions like: Is this module's version already published?, Is this module still a snapshot? or Are dependencies affected by CVEs?
 
 ## Integrations
