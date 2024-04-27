@@ -4,6 +4,8 @@
 This plugin will provide a distinctive way to define & discover multiple projects in the same pipeline, hereafter referenced as module.
 All projects found can than be activated or deactivated on individual conditions like: Is this module's version already published?, Is this module still a snapshot? or Are dependencies affected by CVEs?
 
+A proposed example of how the plugin will get applied is shown by migrating the Jenkinsfile of our utils project: [original](https://github.com/RunedUniverse/utils/blob/3e9f90350229ef5e530791dcfd689d3510fff109/Jenkinsfile), [patched](https://github.com/RunedUniverse/jenkins-pipeline-module-router-plugin/blob/master/src/example/Jenkinsfile)
+
 ## Integrations
 Currently we have following integrations in mind ...
 
