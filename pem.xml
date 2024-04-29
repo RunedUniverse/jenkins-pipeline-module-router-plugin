@@ -1,20 +1,10 @@
-<!--
-
-    Copyright © 2024 VenaNocta (venanocta@gmail.com)
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-
--->
+<!-- Copyright © 2024 VenaNocta (venanocta@gmail.com) Licensed under the 
+	Apache License, Version 2.0 (the "License"); you may not use this file except 
+	in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. -->
 <project-execution-model
 	xmlns="https://api.runeduniverse.net/runes4tools/r4m-pem"
 	xsi:schemaLocation="https://api.runeduniverse.net/runes4tools/r4m-pem https://api.runeduniverse.net/runes4tools/r4m-pem-v1_0_0.xsd"
@@ -263,6 +253,7 @@
 			<triggers>
 				<active-profile id="dev-install" />
 				<active-profile id="format" />
+				<active-profile id="quick-build" />
 				<missing-profile id="install" />
 				<missing-profile id="test-junit-jupiter" />
 				<missing-profile id="deploy" />
@@ -490,14 +481,14 @@
 				</lifecycle>
 			</lifecycles>
 		</execution>
-		<execution source="override" id="add-source">
+		<!-- executions for configuration activision inherited from org.jenkins-ci.plugin 
+			pom :: start -->
+		<execution source="packaging" id="add-source">
 			<triggers>
 				<default />
 				<active-profile id="dev-install" />
 				<active-profile id="install" />
 				<missing-profile id="test-junit-jupiter" />
-				<missing-profile id="deploy" />
-				<missing-profile id="deploy-signed" />
 			</triggers>
 			<restrictions>
 				<packaging-procedure>hpi</packaging-procedure>
@@ -521,8 +512,86 @@
 				</lifecycle>
 			</lifecycles>
 		</execution>
+		<execution source="packaging" id="attach-sources">
+			<triggers>
+				<active-profile id="jenkins-release" />
+				<active-profile id="produce-incrementals" />
+			</triggers>
+			<restrictions>
+				<packaging-procedure>hpi</packaging-procedure>
+			</restrictions>
+			<lifecycles>
+				<lifecycle id="default">
+					<phases>
+						<phase id="package">
+							<goals>
+								<goal id="jar-no-fork">
+									<groupId>org.apache.maven.plugins</groupId>
+									<artifactId>maven-source-plugin</artifactId>
+									<modes>
+										<default />
+									</modes>
+								</goal>
+							</goals>
+						</phase>
+					</phases>
+				</lifecycle>
+			</lifecycles>
+		</execution>
+		<execution source="packaging" id="attach-test-sources">
+			<triggers>
+				<active-profile id="jenkins-release" />
+				<active-profile id="produce-incrementals" />
+			</triggers>
+			<restrictions>
+				<packaging-procedure>hpi</packaging-procedure>
+			</restrictions>
+			<lifecycles>
+				<lifecycle id="default">
+					<phases>
+						<phase id="package">
+							<goals>
+								<goal id="test-jar-no-fork">
+									<groupId>org.apache.maven.plugins</groupId>
+									<artifactId>maven-source-plugin</artifactId>
+									<modes>
+										<default />
+									</modes>
+								</goal>
+							</goals>
+						</phase>
+					</phases>
+				</lifecycle>
+			</lifecycles>
+		</execution>
+		<execution source="packaging" id="attach-javadocs">
+			<triggers>
+				<active-profile id="jenkins-release" />
+				<active-profile id="produce-incrementals" />
+			</triggers>
+			<restrictions>
+				<packaging-procedure>hpi</packaging-procedure>
+			</restrictions>
+			<lifecycles>
+				<lifecycle id="default">
+					<phases>
+						<phase id="package">
+							<goals>
+								<goal id="jar">
+									<groupId>org.apache.maven.plugins</groupId>
+									<artifactId>maven-javadoc-plugin</artifactId>
+									<modes>
+										<default />
+									</modes>
+								</goal>
+							</goals>
+						</phase>
+					</phases>
+				</lifecycle>
+			</lifecycles>
+		</execution>
 
-		<execution source="override" id="maybe-test-jar">
+		<execution source="packaging" id="maybe-test-jar">
 			<triggers>
 				<on-call />
 			</triggers>
@@ -549,7 +618,7 @@
 			</lifecycles>
 		</execution>
 
-		<execution source="override" id="flatten">
+		<execution source="packaging" id="flatten">
 			<triggers>
 				<active-profile id="might-produce-incrementals" />
 			</triggers>
@@ -576,7 +645,7 @@
 			</lifecycles>
 		</execution>
 
-		<execution source="override" id="display-info">
+		<execution source="packaging" id="display-info">
 			<triggers>
 				<always />
 			</triggers>
@@ -603,7 +672,7 @@
 			</lifecycles>
 		</execution>
 
-		<execution source="override" id="no-snapshots-in-release">
+		<execution source="packaging" id="no-snapshots-in-release">
 			<triggers>
 				<default />
 				<on-call />
@@ -631,7 +700,7 @@
 			</lifecycles>
 		</execution>
 
-		<execution source="override" id="spotbugs">
+		<execution source="packaging" id="spotbugs">
 			<triggers>
 				<on-call />
 			</triggers>
@@ -658,7 +727,7 @@
 			</lifecycles>
 		</execution>
 
-		<execution source="override" id="createTempDir">
+		<execution source="packaging" id="createTempDir">
 			<triggers>
 				<default />
 				<on-call />
@@ -685,5 +754,269 @@
 				</lifecycle>
 			</lifecycles>
 		</execution>
+
+		<!-- plugin: com.github.eirslett:frontend-maven-plugin -->
+		<execution source="packaging" id="install node and npm">
+			<triggers>
+				<active-profile id="node-execution" />
+			</triggers>
+			<restrictions>
+				<packaging-procedure>hpi</packaging-procedure>
+			</restrictions>
+			<lifecycles>
+				<lifecycle id="default">
+					<phases>
+						<phase id="initialize">
+							<goals>
+								<goal id="install-node-and-npm">
+									<groupId>com.github.eirslett</groupId>
+									<artifactId>frontend-maven-plugin</artifactId>
+									<modes>
+										<default />
+									</modes>
+								</goal>
+							</goals>
+						</phase>
+					</phases>
+				</lifecycle>
+			</lifecycles>
+		</execution>
+		<execution source="packaging" id="npm install">
+			<triggers>
+				<active-profile id="node-execution" />
+			</triggers>
+			<restrictions>
+				<packaging-procedure>hpi</packaging-procedure>
+			</restrictions>
+			<lifecycles>
+				<lifecycle id="default">
+					<phases>
+						<phase id="initialize">
+							<goals>
+								<goal id="npm">
+									<groupId>com.github.eirslett</groupId>
+									<artifactId>frontend-maven-plugin</artifactId>
+									<modes>
+										<default />
+										<dev />
+									</modes>
+								</goal>
+							</goals>
+						</phase>
+					</phases>
+				</lifecycle>
+			</lifecycles>
+		</execution>
+		<execution source="packaging" id="npm mvnbuild">
+			<triggers>
+				<active-profile id="node-execution" />
+			</triggers>
+			<restrictions>
+				<packaging-procedure>hpi</packaging-procedure>
+			</restrictions>
+			<lifecycles>
+				<lifecycle id="default">
+					<phases>
+						<phase id="generate-sources">
+							<goals>
+								<goal id="npm">
+									<groupId>com.github.eirslett</groupId>
+									<artifactId>frontend-maven-plugin</artifactId>
+									<modes>
+										<default />
+										<dev />
+									</modes>
+								</goal>
+							</goals>
+						</phase>
+					</phases>
+				</lifecycle>
+			</lifecycles>
+		</execution>
+		<execution source="packaging" id="npm mvntest">
+			<triggers>
+				<active-profile id="node-execution" />
+			</triggers>
+			<restrictions>
+				<packaging-procedure>hpi</packaging-procedure>
+			</restrictions>
+			<lifecycles>
+				<lifecycle id="default">
+					<phases>
+						<phase id="test">
+							<goals>
+								<goal id="npm">
+									<groupId>com.github.eirslett</groupId>
+									<artifactId>frontend-maven-plugin</artifactId>
+									<modes>
+										<default />
+										<dev />
+									</modes>
+								</goal>
+							</goals>
+						</phase>
+					</phases>
+				</lifecycle>
+			</lifecycles>
+		</execution>
+
+		<execution source="packaging" id="install node and yarn">
+			<triggers>
+				<active-profile id="yarn-execution" />
+			</triggers>
+			<restrictions>
+				<packaging-procedure>hpi</packaging-procedure>
+			</restrictions>
+			<lifecycles>
+				<lifecycle id="default">
+					<phases>
+						<phase id="initialize">
+							<goals>
+								<goal id="install-node-and-yarn">
+									<groupId>com.github.eirslett</groupId>
+									<artifactId>frontend-maven-plugin</artifactId>
+									<modes>
+										<default />
+										<dev />
+									</modes>
+								</goal>
+							</goals>
+						</phase>
+					</phases>
+				</lifecycle>
+			</lifecycles>
+		</execution>
+		<execution source="packaging" id="yarn install">
+			<triggers>
+				<active-profile id="yarn-execution" />
+			</triggers>
+			<restrictions>
+				<packaging-procedure>hpi</packaging-procedure>
+			</restrictions>
+			<lifecycles>
+				<lifecycle id="default">
+					<phases>
+						<phase id="initialize">
+							<goals>
+								<goal id="yarn">
+									<groupId>com.github.eirslett</groupId>
+									<artifactId>frontend-maven-plugin</artifactId>
+									<modes>
+										<default />
+										<dev />
+									</modes>
+								</goal>
+							</goals>
+						</phase>
+					</phases>
+				</lifecycle>
+			</lifecycles>
+		</execution>
+		<execution source="packaging" id="yarn mvnbuild">
+			<triggers>
+				<active-profile id="yarn-execution" />
+			</triggers>
+			<restrictions>
+				<packaging-procedure>hpi</packaging-procedure>
+			</restrictions>
+			<lifecycles>
+				<lifecycle id="default">
+					<phases>
+						<phase id="generate-sources">
+							<goals>
+								<goal id="yarn">
+									<groupId>com.github.eirslett</groupId>
+									<artifactId>frontend-maven-plugin</artifactId>
+									<modes>
+										<default />
+										<dev />
+									</modes>
+								</goal>
+							</goals>
+						</phase>
+					</phases>
+				</lifecycle>
+			</lifecycles>
+		</execution>
+		<execution source="packaging" id="yarn mvntest">
+			<triggers>
+				<active-profile id="yarn-execution" />
+			</triggers>
+			<restrictions>
+				<packaging-procedure>hpi</packaging-procedure>
+			</restrictions>
+			<lifecycles>
+				<lifecycle id="default">
+					<phases>
+						<phase id="test">
+							<goals>
+								<goal id="yarn">
+									<groupId>com.github.eirslett</groupId>
+									<artifactId>frontend-maven-plugin</artifactId>
+									<modes>
+										<default />
+										<dev />
+									</modes>
+								</goal>
+							</goals>
+						</phase>
+					</phases>
+				</lifecycle>
+			</lifecycles>
+		</execution>
+
+		<!-- active-profile: enable-jacoco -->
+		<execution source="packaging" id="default">
+			<triggers>
+				<active-profile id="enable-jacoco" />
+			</triggers>
+			<restrictions>
+				<packaging-procedure>hpi</packaging-procedure>
+			</restrictions>
+			<lifecycles>
+				<lifecycle id="default">
+					<phases>
+						<phase id="initialize">
+							<goals>
+								<goal id="prepare-agent">
+									<groupId>org.jacoco</groupId>
+									<artifactId>jacoco-maven-plugin</artifactId>
+									<modes>
+										<default />
+									</modes>
+								</goal>
+							</goals>
+						</phase>
+					</phases>
+				</lifecycle>
+			</lifecycles>
+		</execution>
+		<execution source="packaging" id="report">
+			<triggers>
+				<active-profile id="enable-jacoco" />
+			</triggers>
+			<restrictions>
+				<packaging-procedure>hpi</packaging-procedure>
+			</restrictions>
+			<lifecycles>
+				<lifecycle id="default">
+					<phases>
+						<phase id="verify">
+							<goals>
+								<goal id="report">
+									<groupId>org.jacoco</groupId>
+									<artifactId>jacoco-maven-plugin</artifactId>
+									<modes>
+										<default />
+									</modes>
+								</goal>
+							</goals>
+						</phase>
+					</phases>
+				</lifecycle>
+			</lifecycles>
+		</execution>
+		<!-- executions for configuration activision inherited from org.jenkins-ci.plugin 
+			pom :: end -->
 	</executions>
 </project-execution-model>
