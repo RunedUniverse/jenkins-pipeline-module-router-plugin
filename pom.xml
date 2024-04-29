@@ -40,7 +40,7 @@
 	<modules>
 		<module>sources</module>
 		<module>api</module>
-		<module>plugin</module>
+		<!-- <module>declarative-plugin</module> -->
 	</modules>
 
 	<licenses>

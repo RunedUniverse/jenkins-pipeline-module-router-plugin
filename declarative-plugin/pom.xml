@@ -26,11 +26,11 @@
 		<version>0.0.0</version>
 	</parent>
 
-	<artifactId>module-router-plugin</artifactId>
+	<artifactId>module-router-declarative-plugin</artifactId>
 	<version>${major-version}.${minor-version}.${artifact-version}</version>
 	<packaging>hpi</packaging>
 
-	<name>Jenkins - Pipeline Module Router Plugin</name>
+	<name>Jenkins - Pipeline Module Router Declarative Plugin</name>
 	<url>https://github.com/RunedUniverse/jenkins-pipeline-module-router-plugin</url>
 	<inceptionYear>2024</inceptionYear>
 

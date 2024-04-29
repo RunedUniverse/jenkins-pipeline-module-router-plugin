@@ -4,21 +4,18 @@ pipeline {
 		maven 'maven-latest'
 	}
 	options {
-		moduleRouter {
-			modules {
-				module id: 'mvn-parent'			path: '.'					name: 'Maven Parent'
-				module id: 'java-utils-async'	path: 'java-utils-async'	name: 'Java Utils Async'
-				module id: 'java-utils-bom'		path: 'java-utils-bom'		name: 'Bill of Materials'
-				module id: 'java-utils-chain'	path: 'java-utils-chain'	name: 'Java Chain Library'
-				module id: 'java-utils-common'	path: 'java-utils-common'	name: 'Java Utils Common'
-				module id: 'java-utils-errors'	path: 'java-utils-errors'	name: 'Java Error Handling Library'
-				module id: 'java-utils-logging'	path: 'java-utils-logging'	name: 'Java Logging Tools'
-				module id: 'java-utils-scanner'	path: 'java-utils-scanner'	name: 'Java Scanner'
-			}
-			initModule {
-				activate(true);
-			}
-		}
+		moduleRouter(
+				modules: [
+					{ id: 'mvn-parent',			path: '.',					name: 'Maven Parent' },
+					{ id: 'java-utils-async',	path: 'java-utils-async',	name: 'Java Utils Async' },
+					{ id: 'java-utils-bom',		path: 'java-utils-bom',		name: 'Bill of Materials' },
+					{ id: 'java-utils-chain',	path: 'java-utils-chain',	name: 'Java Chain Library' },
+					{ id: 'java-utils-common',	path: 'java-utils-common',	name: 'Java Utils Common' },
+					{ id: 'java-utils-errors',	path: 'java-utils-errors',	name: 'Java Error Handling Library' },
+					{ id: 'java-utils-logging',	path: 'java-utils-logging',	name: 'Java Logging Tools' },
+					{ id: 'java-utils-scanner',	path: 'java-utils-scanner',	name: 'Java Scanner' }
+				], initModule: { activate(true) }
+			)
 	}
 	environment {
 		PATH = """${sh(
@@ -59,7 +56,7 @@ pipeline {
 			}
 		}
 		// init after "Initialize" since the selection requires maven, which in turn requires the parent to be already installed!
-		stagePerModule(name: 'Init Module Router', parallel: true) {
+		stagePerModule(name: 'Init Module Router', parallelize: true) {
 			steps {
 				module.activate(
 					sh(
@@ -79,7 +76,7 @@ pipeline {
 			}
 		}
 
-		stagePerModule(name: 'Code Validation', parallel: true) {
+		stagePerModule(name: 'Code Validation', parallelize: true) {
 			when {
 				expression { active() }
 			}
@@ -121,7 +118,7 @@ pipeline {
 			}
 		}
 		
-		stagePerModule(name: 'Build [1st Level]', parallel: true, 
+		stagePerModule(name: 'Build [1st Level]', parallelize: true, 
 				select: [ 'java-utils-logging', 'java-utils-errors', 'java-utils-common', 'java-utils-async' ]) {
 			when {
 				expression { active() }
@@ -138,7 +135,7 @@ pipeline {
 				}
 			}
 		}
-		stagePerModule(name: 'Build [2nd Level]', parallel: true, 
+		stagePerModule(name: 'Build [2nd Level]', parallelize: true, 
 				select: [ 'java-utils-scanner', 'java-utils-chain' ]) {
 			when {
 				expression { active() }
@@ -204,7 +201,7 @@ pipeline {
 			}
 		}
 		
-		stagePerModule(name: 'Deploy', parallel: true ) {
+		stagePerModule(name: 'Deploy', parallelize: true ) {
 			when {
 				expression { active() }
 			}
