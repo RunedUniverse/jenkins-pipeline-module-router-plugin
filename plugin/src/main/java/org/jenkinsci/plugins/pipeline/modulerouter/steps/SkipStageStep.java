@@ -1,3 +1,18 @@
+/*
+ * Copyright © 2024 VenaNocta (venanocta@gmail.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jenkinsci.plugins.pipeline.modulerouter.steps;
 
 import java.io.IOException;
@@ -10,7 +25,6 @@ import org.jenkinsci.plugins.workflow.actions.ThreadNameAction;
 import org.jenkinsci.plugins.workflow.cps.nodes.StepStartNode;
 import org.jenkinsci.plugins.workflow.graph.BlockStartNode;
 import org.jenkinsci.plugins.workflow.graph.FlowNode;
-import org.jenkinsci.plugins.workflow.steps.BodyExecutionCallback;
 import org.jenkinsci.plugins.workflow.steps.Step;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepDescriptor;
@@ -21,15 +35,15 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 
-public class WhenStep extends Step {
+public class SkipStageStep extends Step {
 
 	@DataBoundConstructor
-	public WhenStep() {
+	public SkipStageStep() {
 	}
 
 	@Override
 	public StepExecution start(StepContext context) throws Exception {
-		return new WhenExecution(context);
+		return new SkipStageExecution(context);
 	}
 
 	public static FlowNode getStage(FlowNode flowNode) {
@@ -70,82 +84,52 @@ public class WhenStep extends Step {
 		}
 	}
 
-	public static class WhenExecution extends StepExecution {
+	public static class SkipStageExecution extends StepExecution {
 
 		private static final long serialVersionUID = 1L;
 
-		public WhenExecution(@NonNull StepContext context) {
+		public SkipStageExecution(@NonNull StepContext context) {
 			super(context);
 		}
 
 		@Override
 		public boolean start() throws Exception {
-			getContext().newBodyInvoker()
-					.withCallback(new WhenCallback())
-					.start();
-			return false;
-		}
-
-	}
-
-	protected static class WhenCallback extends BodyExecutionCallback {
-
-		private static final long serialVersionUID = 1L;
-
-		@Override
-		public void onSuccess(StepContext context, Object result) {
+			StepContext context = getContext();
 			FlowNode flowNode = null;
 			try {
 				flowNode = context.get(FlowNode.class);
 			} catch (IOException | InterruptedException e) {
 				context.onFailure(e);
-				return;
+				return true;
 			}
 			flowNode = getStage(flowNode);
 			if (flowNode == null) {
 				context.onFailure(new NullPointerException("when is not inside a stage!"));
-				return;
-			}
-			if (!(result instanceof Boolean)) {
-				context.onFailure(new ClassCastException("body return value " + result + " is not boolean"));
-				return;
-			}
-			if ((Boolean) result) {
-				context.onSuccess(null);
-				return;
+				return true;
 			}
 			addTagToFlowNode(flowNode, "STAGE_STATUS", "SKIPPED_FOR_CONDITIONAL");
-		}
-
-		@Override
-		public void onFailure(StepContext context, Throwable t) {
-			context.onFailure(t);
+			return true;
 		}
 
 	}
 
 	@Extension
-	protected static class WhenDescriptor extends StepDescriptor {
+	public static class WhenDescriptor extends StepDescriptor {
 
 		@Override
 		public String getFunctionName() {
-			return "when";
+			return "skipStage";
 		}
 
 		@NonNull
 		@Override
 		public String getDisplayName() {
-			return "When condition for workflow stages";
-		}
-
-		@Override
-		public boolean takesImplicitBlockArgument() {
-			return true;
+			return "Mark enclosing Stage as skipped";
 		}
 
 		@Override
 		public Set<? extends Class<?>> getRequiredContext() {
-			return Collections.singleton(null);
+			return Collections.singleton(FlowNode.class);
 		}
 
 	}

@@ -56,145 +56,142 @@ node {
 		sh 'printenv | sort'
 	}
 	stage('Update Maven Repo') {
-		when {
-			anyModuleActive
+		if(!anyModuleActive()) {
+			skipStage
+			return
 		}
 		sh 'mvn-dev -P ${REPOS} dependency:purge-local-repository -DactTransitively=false -DreResolve=false --non-recursive'
 		sh 'mvn-dev -P ${REPOS} dependency:resolve --non-recursive'
 	}
 
 	stagePerModule(name: 'Code Validation', parallelize: true) {
-		when {
-			module.active()
+		if(!module.active()) {
+			skipStage
+			return
 		}
 		sh 'mvn-dev -P ${REPOS},validate,license-apache2-approve -pl='+module.relPathToModule("mvn-parent")
 	}
 
 	stage('Install Maven Parent') {
-		when {
-			moduleActive id: 'mvn-parent'
+		if(!moduleActive(id: 'mvn-parent')) {
+			skipStage
+			return
 		}
-		sh 'mvn-dev -P ${REPOS},toolchain-openjdk-1-8-0,install --non-recursive'
-		post {
-			always {
-				dir(path: 'target') {
-					sh 'ls -l'
-					sh 'cp *.pom *.asc ${RESULT_PATH}'
-				}
+		try {
+			sh 'mvn-dev -P ${REPOS},toolchain-openjdk-1-8-0,install --non-recursive'
+		} finally {
+			dir(path: 'target') {
+				sh 'ls -l'
+				sh 'cp *.pom *.asc ${RESULT_PATH}'
 			}
 		}
 	}
 	stage('Install - Bill of Materials') {
-		when {
-			moduleActive id: 'java-utils-bom'
+		if(!moduleActive(id: 'java-utils-bom')) {
+			skipStage
+			return
 		}
-		sh 'mvn-dev -P ${REPOS},toolchain-openjdk-1-8-0,install -pl=java-utils-bom'
-		post {
-			always {
-				dir(path: 'java-utils-bom/target') {
-					sh 'ls -l'
-					sh 'cp *.pom *.asc ${RESULT_PATH}'
-				}
+		try {
+			sh 'mvn-dev -P ${REPOS},toolchain-openjdk-1-8-0,install -pl=java-utils-bom'
+		} finally {
+			dir(path: 'java-utils-bom/target') {
+				sh 'ls -l'
+				sh 'cp *.pom *.asc ${RESULT_PATH}'
 			}
 		}
 	}
 
 	stagePerModule(name: 'Build [1st Level]', parallelize: true, 
 			select: [ 'java-utils-logging', 'java-utils-errors', 'java-utils-common', 'java-utils-async' ]) {
-		when {
-			module.active()
+		if(!module.active()) {
+			skipStage
+			return
 		}
-		sh 'mvn-dev -P ${REPOS},toolchain-openjdk-1-8-0,install -pl='+module.relPathToModule("mvn-parent")
-		post {
-			always {
-				dir(path: 'java-utils-logging/target') {
-					sh 'ls -l'
-					sh 'cp *.pom *.jar *.asc ${RESULT_PATH}'
-				}
+		try {
+			sh 'mvn-dev -P ${REPOS},toolchain-openjdk-1-8-0,install -pl='+module.relPathToModule("mvn-parent")
+		} finally {
+			dir(path: "${ module.path() }/target") {
+				sh 'ls -l'
+				sh 'cp *.pom *.jar *.asc ${RESULT_PATH}'
 			}
 		}
 	}
 	stagePerModule(name: 'Build [2nd Level]', parallelize: true, 
 			select: [ 'java-utils-scanner', 'java-utils-chain' ]) {
-		when {
-			module.active()
+		if(!module.active()) {
+			skipStage
+			return
 		}
-		sh 'mvn-dev -P ${REPOS},toolchain-openjdk-1-8-0,install -pl='+module.relPathToModule("mvn-parent")
-		post {
-			always {
-				dir(path: 'java-utils-logging/target') {
-					sh 'ls -l'
-					sh 'cp *.pom *.jar *.asc ${RESULT_PATH}'
-				}
+		try {
+			sh 'mvn-dev -P ${REPOS},toolchain-openjdk-1-8-0,install -pl='+module.relPathToModule("mvn-parent")
+		} finally {
+			dir(path: "${ module.path() }/target") {
+				sh 'ls -l'
+				sh 'cp *.pom *.jar *.asc ${RESULT_PATH}'
 			}
 		}
 	}
 
 	stage('Test') {
-		when {
-			anyTrue {
+		if(!anyTrue {
 				moduleActive id: 'java-utils-logging'
 				moduleActive id: 'java-utils-errors'
 				moduleActive id: 'java-utils-common'
 				moduleActive id: 'java-utils-async'
 				moduleActive id: 'java-utils-scanner'
 				moduleActive id: 'java-utils-chain'
-			}
+			}) {
+			skipStage
+			return
 		}
 		sh 'mvn-dev -P ${REPOS},toolchain-openjdk-1-8-0,build-tests'
-		sh 'mvn-dev -P ${REPOS},toolchain-openjdk-1-8-0,test-junit-jupiter,test-system'
-		post {
-			always {
-				junit '*/target/surefire-reports/*.xml'
-			}
-			failure {
-				archiveArtifacts artifacts: '*/target/surefire-reports/*.xml'
-			}
+		try {
+			sh 'mvn-dev -P ${REPOS},toolchain-openjdk-1-8-0,test-junit-jupiter,test-system'
+		} catch (e) {
+			archiveArtifacts artifacts: '*/target/surefire-reports/*.xml'
+		} finally {
+			junit '*/target/surefire-reports/*.xml'
 		}
 	}
 
 	stage('Package Build Result') {
-		when {
-			anyModuleActive
+		if(!anyModuleActive()) {
+			skipStage
+			return
 		}
 		dir(path: "${env.RESULT_PATH}") {
 			sh 'ls -l'
+			archiveArtifacts artifacts: '*', fingerprint: true
 			sh 'tar -I "pxz -9" -cvf ${ARCHIVE_PATH}utils.tar.xz *'
 			sh 'zip -9 ${ARCHIVE_PATH}utils.zip *'
-		}
-		post {
-			always {
-				dir(path: "${env.RESULT_PATH}") {
-					archiveArtifacts artifacts: '*', fingerprint: true
-				}
-				dir(path: "${env.ARCHIVE_PATH}") {
-					archiveArtifacts artifacts: '*', fingerprint: true
-				}
-			}
+			archiveArtifacts artifacts: '*', fingerprint: true
 		}
 	}
 
 	stagePerModule(name: 'Deploy', parallelize: true ) {
-		when {
-			module.active()
+		if(!module.active()) {
+			skipStage
+			return
 		}
 		stage('Develop'){
 			sh 'mvn-dev -P ${REPOS},dist-repo-development,deploy -pl='+module.relPathToModule("mvn-parent")
 		}
 		stage('Release') {
-			when {
-				branch 'master'
+			if(env.GIT_BRANCH != 'master') {
+				skipStage
+				return
 			}
 			sh 'mvn-dev -P ${REPOS},dist-repo-releases,deploy-signed -pl='+module.relPathToModule("mvn-parent")
 		}
 		stage('Stage at Maven-Central') {
-			when {
-				env.GIT_BRANCH == 'master'
+			if(env.GIT_BRANCH != 'master') {
+				skipStage
+				return
 			}
 			// never add : -P ${REPOS} => this is ment to fail here
 			sh 'mvn-dev -P repo-releases,dist-repo-maven-central,deploy-signed -pl='+module.relPathToModule("mvn-parent")
 			sshagent (credentials: ['RunedUniverse-Jenkins']) {
-				sh 'git push origin $(git-create-version-tag '+module.id()+' '+module.relPathToModule("mvn-parent")+')'
+				sh "git push origin $(git-create-version-tag ${ module.id() } ${ module.relPathToModule('mvn-parent') })"
 			}
 		}
 	}

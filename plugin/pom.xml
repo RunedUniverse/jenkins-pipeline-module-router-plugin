@@ -113,7 +113,6 @@
 		<dependency>
 			<groupId>org.jenkins-ci.plugins</groupId>
 			<artifactId>pipeline-stage-step</artifactId>
-			<scope>provided</scope>
 		</dependency>
 
 		<!-- COMPILER -->

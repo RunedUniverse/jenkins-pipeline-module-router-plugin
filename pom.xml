@@ -419,7 +419,7 @@
 									<exclude>**/resources/**</exclude>
 									<exclude>**/license/**</exclude>
 									<exclude>**/target/**</exclude>
-									<exclude>work/**</exclude>
+									<exclude>**/work/**</exclude>
 								</excludes>
 							</licenseSet>
 						</licenseSets>
