@@ -96,10 +96,6 @@
 			<groupId>org.jenkins-ci.plugins</groupId>
 			<artifactId>structs</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.jenkinsci.plugins</groupId>
-			<artifactId>pipeline-model-definition</artifactId>
-		</dependency>
 
 		<!-- logging utilities-->
 		<dependency>
@@ -109,6 +105,15 @@
 		<dependency>
 			<groupId>net.runeduniverse.lib.utils</groupId>
 			<artifactId>utils-logging</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jenkins-ci.plugins.workflow</groupId>
+			<artifactId>workflow-cps</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jenkins-ci.plugins</groupId>
+			<artifactId>pipeline-stage-step</artifactId>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- COMPILER -->
@@ -121,11 +126,6 @@
 		<dependency>
 			<groupId>org.jenkins-ci.plugins.workflow</groupId>
 			<artifactId>workflow-basic-steps</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jenkins-ci.plugins.workflow</groupId>
-			<artifactId>workflow-cps</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
