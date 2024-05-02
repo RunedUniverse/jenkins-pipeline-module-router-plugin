@@ -26,12 +26,12 @@
 		<version>4.78</version>
 	</parent>
 
-	<groupId>org.jenkins-ci.plugins.pipeline.module-router</groupId>
-	<artifactId>module-router-parent</artifactId>
+	<groupId>org.jenkins-ci.plugins.workflow-modules</groupId>
+	<artifactId>workflow-modules-parent</artifactId>
 	<version>0.0.0</version>
 	<packaging>pom</packaging>
 
-	<name>Jenkins - Pipeline Module Router Plugin - Parent</name>
+	<name>Jenkins - Workflow Modules Plugin - Parent</name>
 	<description>Jenkins Plugin to enable selective building of multiple
 		modules(projects) stored in the same pipeline (repository) </description>
 	<url>https://github.com/RunedUniverse/jenkins-pipeline-module-router-plugin</url>
@@ -73,16 +73,16 @@
 
 	<scm>
 		<url>
-			https://github.com/RunedUniverse/jenkins-pipeline-module-router-plugin</url>
+			https://github.com/RunedUniverse/jenkins-workflow-modules-plugin</url>
 		<connection>
-			scm:git:https://github.com/RunedUniverse/jenkins-pipeline-module-router-plugin.git</connection>
+			scm:git:https://github.com/RunedUniverse/jenkins-workflow-modules-plugin.git</connection>
 		<developerConnection>
-			scm:git:git@github.com:RunedUniverse/jenkins-pipeline-module-router-plugin.git</developerConnection>
+			scm:git:git@github.com:RunedUniverse/jenkins-workflow-modules-plugin.git</developerConnection>
 	</scm>
 	<issueManagement>
 		<system>GitHub Issues</system>
 		<url>
-			https://github.com/RunedUniverse/jenkins-pipeline-module-router-plugin/issues</url>
+			https://github.com/RunedUniverse/jenkins-workflow-modules-plugin/issues</url>
 	</issueManagement>
 
 	<properties>

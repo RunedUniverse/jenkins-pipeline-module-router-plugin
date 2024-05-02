@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jenkinsci.plugins.pipeline.modulerouter.steps;
+package org.jenkinsci.plugins.workflowmodules.steps;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -104,7 +104,7 @@ public class SkipStageStep extends Step {
 			}
 			flowNode = getStage(flowNode);
 			if (flowNode == null) {
-				context.onFailure(new NullPointerException("when is not inside a stage!"));
+				context.onFailure(new NullPointerException("skipStage is not inside a stage!"));
 				return true;
 			}
 			addTagToFlowNode(flowNode, "STAGE_STATUS", "SKIPPED_FOR_CONDITIONAL");

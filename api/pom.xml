@@ -21,17 +21,17 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.jenkins-ci.plugins.pipeline.module-router</groupId>
-		<artifactId>module-router-parent</artifactId>
+		<groupId>org.jenkins-ci.plugins.workflow-modules</groupId>
+		<artifactId>workflow-modules-parent</artifactId>
 		<version>0.0.0</version>
 	</parent>
 
-	<artifactId>module-router-api</artifactId>
+	<artifactId>workflow-modules-api</artifactId>
 	<version>${major-version}.${minor-version}.${artifact-version}</version>
 	<packaging>jar</packaging>
 
-	<name>Jenkins - Pipeline Module Router Plugin - API</name>
-	<url>https://github.com/RunedUniverse/jenkins-pipeline-module-router-plugin</url>
+	<name>Jenkins - Workflow Modules Plugin - API</name>
+	<url>https://github.com/RunedUniverse/jenkins-workflow-modules-plugin</url>
 	<inceptionYear>2024</inceptionYear>
 
 	<properties>
@@ -71,16 +71,16 @@
 
 	<scm>
 		<url>
-			https://github.com/RunedUniverse/jenkins-pipeline-module-router-plugin</url>
+			https://github.com/RunedUniverse/jenkins-workflow-modules-plugin</url>
 		<connection>
-			scm:git:https://github.com/RunedUniverse/jenkins-pipeline-module-router-plugin.git</connection>
+			scm:git:https://github.com/RunedUniverse/jenkins-workflow-modules-plugin.git</connection>
 		<developerConnection>
-			scm:git:git@github.com:RunedUniverse/jenkins-pipeline-module-router-plugin.git</developerConnection>
+			scm:git:git@github.com:RunedUniverse/jenkins-workflow-modules-plugin.git</developerConnection>
 	</scm>
 	<issueManagement>
 		<system>GitHub Issues</system>
 		<url>
-			https://github.com/RunedUniverse/jenkins-pipeline-module-router-plugin/issues</url>
+			https://github.com/RunedUniverse/jenkins-workflow-modules-plugin/issues</url>
 	</issueManagement>
 
 	<dependencies>
@@ -94,8 +94,8 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>org.jenkins-ci.plugins.pipeline.module-router</groupId>
-				<artifactId>module-router-bom-sources</artifactId>
+				<groupId>org.jenkins-ci.plugins.workflow-modules</groupId>
+				<artifactId>workflow-modules-bom-sources</artifactId>
 				<version>${major-version}.${minor-version}.${sources-version}</version>
 				<type>pom</type>
 				<scope>import</scope>
