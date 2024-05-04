@@ -74,7 +74,7 @@ public class StagePerModuleStep extends Step {
 	}
 
 	public Predicate<WorkflowModule> filter() {
-		Predicate<WorkflowModule> filter = selectActive();
+		Predicate<WorkflowModule> filter = selectAll();
 		// possibly add more checks later
 		if (_selectedIds) {
 			filter = filter.and(selectByIds(getSelectIds()));
