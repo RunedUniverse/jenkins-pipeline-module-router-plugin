@@ -22,11 +22,13 @@ import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepDescriptor;
 import org.jenkinsci.plugins.workflow.steps.StepExecution;
 import org.jenkinsci.plugins.workflow.steps.SynchronousStepExecution;
-import org.jenkinsci.plugins.workflowmodules.context.WorkflowModuleDynamicContext;
+import org.jenkinsci.plugins.workflowmodules.context.WorkflowModuleContainer;
 import org.kohsuke.stapler.DataBoundConstructor;
 import com.google.common.collect.ImmutableSet;
 
 import hudson.Extension;
+
+import static org.jenkinsci.plugins.workflowmodules.context.WorkflowModuleContainer.selectActive;
 
 public class IsAnyModuleActiveStep extends Step {
 
@@ -49,10 +51,10 @@ public class IsAnyModuleActiveStep extends Step {
 
 		@Override
 		protected Boolean run() throws Exception {
-			final WorkflowModuleDynamicContext dynamicContext = getContext().get(WorkflowModuleDynamicContext.class);
+			final WorkflowModuleContainer dynamicContext = getContext().get(WorkflowModuleContainer.class);
 			if (dynamicContext == null)
 				return false;
-			return !dynamicContext.getActiveModules()
+			return !dynamicContext.getModules(selectActive())
 					.isEmpty();
 		}
 
@@ -73,7 +75,7 @@ public class IsAnyModuleActiveStep extends Step {
 
 		@Override
 		public Set<? extends Class<?>> getRequiredContext() {
-			return ImmutableSet.of(WorkflowModuleDynamicContext.class);
+			return ImmutableSet.of(WorkflowModuleContainer.class);
 		}
 
 		@Override

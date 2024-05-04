@@ -23,13 +23,14 @@ import org.jenkinsci.plugins.workflow.steps.StepDescriptor;
 import org.jenkinsci.plugins.workflow.steps.StepExecution;
 import org.jenkinsci.plugins.workflow.steps.SynchronousStepExecution;
 import org.jenkinsci.plugins.workflowmodules.context.WorkflowModule;
-import org.jenkinsci.plugins.workflowmodules.context.WorkflowModuleDynamicContext;
+import org.jenkinsci.plugins.workflowmodules.context.WorkflowModuleContainer;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
 import com.google.common.collect.ImmutableSet;
 
 import hudson.Extension;
+import hudson.FilePath;
 import lombok.Getter;
 
 public class AddModuleStep extends Step {
@@ -56,6 +57,7 @@ public class AddModuleStep extends Step {
 		this.name = name;
 	}
 
+	@DataBoundSetter
 	public void setActive(Boolean active) {
 		this.active = active;
 	}
@@ -78,10 +80,15 @@ public class AddModuleStep extends Step {
 
 		@Override
 		protected Void run() throws Exception {
-			final WorkflowModuleDynamicContext dynamicContext = getContext().get(WorkflowModuleDynamicContext.class);
-			if (dynamicContext == null)
+			final FilePath dir = getContext().get(FilePath.class);
+			// clean the path + resolve current path from pushd
+			final String path = dir.child(this.step.getPath())
+					.absolutize()
+					.readToString();
+			final WorkflowModuleContainer container = getContext().get(WorkflowModuleContainer.class);
+			if (container == null)
 				return null;
-			final WorkflowModule module = dynamicContext.createModule(step.getId(), this.step.getPath());
+			final WorkflowModule module = container.createModule(this.step.getId(), path);
 			module.rename(this.step.getName());
 			module.activate(this.step.getActive());
 			return null;
@@ -104,7 +111,7 @@ public class AddModuleStep extends Step {
 
 		@Override
 		public Set<? extends Class<?>> getRequiredContext() {
-			return ImmutableSet.of(WorkflowModuleDynamicContext.class);
+			return ImmutableSet.of(FilePath.class, WorkflowModuleContainer.class);
 		}
 
 		@Override

@@ -18,13 +18,15 @@ package org.jenkinsci.plugins.workflowmodules.steps;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.function.Predicate;
 
+import org.jenkinsci.plugins.workflow.cps.CpsVmThreadOnly;
 import org.jenkinsci.plugins.workflow.steps.Step;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepDescriptor;
 import org.jenkinsci.plugins.workflow.steps.StepExecution;
 import org.jenkinsci.plugins.workflowmodules.context.WorkflowModule;
-import org.jenkinsci.plugins.workflowmodules.context.WorkflowModuleDynamicContext;
+import org.jenkinsci.plugins.workflowmodules.context.WorkflowModuleContainer;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
@@ -33,16 +35,23 @@ import com.google.common.collect.ImmutableSet;
 import hudson.Extension;
 import lombok.Getter;
 
+import static org.jenkinsci.plugins.workflowmodules.context.WorkflowModuleContainer.*;
+
 public class StagePerModuleStep extends Step {
+
+	@Getter
+	private final Set<String> selectIds = new LinkedHashSet<>(0);
+	private boolean _selectedIds = false;
 
 	@Getter
 	private String name;
 
+	/**
+	 * should a failure in a parallel branch terminate other still executing
+	 * branches.
+	 */
 	@Getter
-	private Boolean parallelize;
-
-	@Getter
-	private Set<String> selectedIds = new LinkedHashSet<>(0);
+	private boolean failFast = false;
 
 	@DataBoundConstructor
 	public StagePerModuleStep() {
@@ -54,35 +63,29 @@ public class StagePerModuleStep extends Step {
 	}
 
 	@DataBoundSetter
-	public void setParallelize(Boolean parallelize) {
-		this.parallelize = parallelize;
+	public void setFailFast(Boolean failFast) {
+		this.failFast = failFast;
 	}
 
 	@DataBoundSetter
 	public void setSelectedIds(Collection<String> selectedIds) {
-		this.selectedIds.addAll(selectedIds);
+		this.selectIds.addAll(selectedIds);
+		this._selectedIds = true;
+	}
+
+	public Predicate<WorkflowModule> filter() {
+		Predicate<WorkflowModule> filter = selectActive();
+		// possibly add more checks later
+		if (_selectedIds) {
+			filter = filter.and(selectByIds(getSelectIds()));
+		}
+		return filter;
 	}
 
 	@Override
+	@CpsVmThreadOnly("CPS program calls this, which is run by CpsVmThread")
 	public StepExecution start(StepContext context) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static class StagePerModuleExecution extends StepExecution {
-
-		private static final long serialVersionUID = 1L;
-
-		public StagePerModuleExecution(StepContext context) {
-			super(context);
-		}
-
-		@Override
-		public boolean start() throws Exception {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
+		return new StagePerModuleExecution(context, this);
 	}
 
 	@Extension
@@ -100,7 +103,7 @@ public class StagePerModuleStep extends Step {
 
 		@Override
 		public Set<? extends Class<?>> getRequiredContext() {
-			return ImmutableSet.of(WorkflowModuleDynamicContext.class);
+			return ImmutableSet.of(WorkflowModuleContainer.class);
 		}
 
 		@Override

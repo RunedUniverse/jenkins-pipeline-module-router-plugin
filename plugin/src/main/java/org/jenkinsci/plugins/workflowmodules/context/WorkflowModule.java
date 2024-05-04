@@ -17,28 +17,36 @@ package org.jenkinsci.plugins.workflowmodules.context;
 
 import java.io.Serializable;
 
+import hudson.FilePath;
 import hudson.Util;
+import lombok.Setter;
 
 public class WorkflowModule implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private final String id;
-	private final String path;
+	private final String rawPath;
 
 	private String name;
+	@Setter
+	private FilePath path;
 	private Boolean active = true;
 
 	public WorkflowModule(final String id, final String path) {
 		this.id = valId(id);
-		this.path = valPath(path);
+		this.rawPath = valPath(path);
 	}
 
 	public String id() {
 		return this.id;
 	}
 
-	public String path() {
+	public String rawPath() {
+		return this.rawPath;
+	}
+
+	public FilePath path() {
 		return this.path;
 	}
 

@@ -23,13 +23,14 @@ import org.jenkinsci.plugins.workflow.steps.Step;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepDescriptor;
 import org.jenkinsci.plugins.workflow.steps.StepExecution;
-import org.jenkinsci.plugins.workflowmodules.context.WorkflowModuleDynamicContext;
+import org.jenkinsci.plugins.workflowmodules.context.WorkflowModuleContainer;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import com.google.common.collect.ImmutableSet;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
+import hudson.FilePath;
 
 public class WithModulesStep extends Step implements Serializable {
 
@@ -51,17 +52,18 @@ public class WithModulesStep extends Step implements Serializable {
 		@SuppressWarnings("unused")
 		private final WithModulesStep step;
 
-		private WorkflowModuleDynamicContext dynamicContext;
+		private WorkflowModuleContainer dynamicContext;
 
 		public WithModulesExecution(StepContext context, WithModulesStep step) {
 			super(context);
 			this.step = step;
-			this.dynamicContext = new WorkflowModuleDynamicContext();
+			this.dynamicContext = new WorkflowModuleContainer();
 		}
 
 		@Override
 		public boolean start() throws Exception {
 			StepContext context = getContext();
+			this.dynamicContext.setWorkspace(context.get(FilePath.class));
 			context.newBodyInvoker()
 					.withContext(this.dynamicContext)
 					.withCallback(BodyExecutionCallback.wrap(context))
@@ -92,12 +94,12 @@ public class WithModulesStep extends Step implements Serializable {
 
 		@Override
 		public Set<? extends Class<?>> getRequiredContext() {
-			return ImmutableSet.of();
+			return ImmutableSet.of(FilePath.class);
 		}
 
 		@Override
 		public Set<? extends Class<?>> getProvidedContext() {
-			return ImmutableSet.of(WorkflowModuleDynamicContext.class);
+			return ImmutableSet.of(WorkflowModuleContainer.class);
 		}
 
 	}

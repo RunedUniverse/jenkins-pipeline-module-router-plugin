@@ -26,6 +26,7 @@ node {
 		}
 	
 		stage('Initialize') {
+			echo 'install parent to tmp repo'
 			sh 'mvn-dev -P ${REPOS},install --non-recursive'
 			env.RESULT_PATH = "${WORKSPACE}/result/"
 			env.ARCHIVE_PATH = "${WORKSPACE}/archive/"
@@ -42,11 +43,11 @@ node {
 			addModule id: 'java-utils-scanner',	path: 'java-utils-scanner',	name: 'Java Scanner'
 		}
 		// init after "Initialize" since the selection requires maven, which in turn requires the parent to be already installed!
-		stagePerModule(name: 'Init Module Router', parallelize: true) {
+		stagePerModule(name: 'Init Module Router', failFast: true) {
 			module.activate(
 				sh(
 					returnStdout: true,
-					script: "git-check-version-tag ${module.id()} ${module.relPathToModule('mvn-parent')}"
+					script: "git-check-version-tag ${module.id()} ${module.relPathFrom('mvn-parent')}"
 				) == '1'
 			);
 		}
@@ -62,7 +63,7 @@ node {
 			sh 'mvn-dev -P ${REPOS} dependency:resolve --non-recursive'
 		}
 	
-		stagePerModule(name: 'Code Validation', parallelize: true) {
+		stagePerModule(name: 'Code Validation') {
 			if(!module.active()) {
 				skipStage
 				return
@@ -99,14 +100,14 @@ node {
 			}
 		}
 	
-		stagePerModule(name: 'Build [1st Level]', parallelize: true,
-				select: [ 'java-utils-logging', 'java-utils-errors', 'java-utils-common', 'java-utils-async' ]) {
+		stagePerModule(name: 'Build [1st Level]',
+				selectIds: [ 'java-utils-logging', 'java-utils-errors', 'java-utils-common', 'java-utils-async' ]) {
 			if(!module.active()) {
 				skipStage
 				return
 			}
 			try {
-				sh 'mvn-dev -P ${REPOS},toolchain-openjdk-1-8-0,install -pl='+module.relPathToModule("mvn-parent")
+				sh 'mvn-dev -P ${REPOS},toolchain-openjdk-1-8-0,install -pl='+module.relPathFrom("mvn-parent")
 			} finally {
 				dir(path: "${ module.path() }/target") {
 					sh 'ls -l'
@@ -114,14 +115,14 @@ node {
 				}
 			}
 		}
-		stagePerModule(name: 'Build [2nd Level]', parallelize: true,
-				select: [ 'java-utils-scanner', 'java-utils-chain' ]) {
+		stagePerModule(name: 'Build [2nd Level]',
+				selectIds: [ 'java-utils-scanner', 'java-utils-chain' ]) {
 			if(!module.active()) {
 				skipStage
 				return
 			}
 			try {
-				sh 'mvn-dev -P ${REPOS},toolchain-openjdk-1-8-0,install -pl='+module.relPathToModule("mvn-parent")
+				sh 'mvn-dev -P ${REPOS},toolchain-openjdk-1-8-0,install -pl='+module.relPathFrom("mvn-parent")
 			} finally {
 				dir(path: "${ module.path() }/target") {
 					sh 'ls -l'
@@ -166,20 +167,20 @@ node {
 			}
 		}
 	
-		stagePerModule(name: 'Deploy', parallelize: true ) {
+		stagePerModule(name: 'Deploy' ) {
 			if(!module.active()) {
 				skipStage
 				return
 			}
 			stage('Develop'){
-				sh 'mvn-dev -P ${REPOS},dist-repo-development,deploy -pl='+module.relPathToModule("mvn-parent")
+				sh 'mvn-dev -P ${REPOS},dist-repo-development,deploy -pl='+module.relPathFrom("mvn-parent")
 			}
 			stage('Release') {
 				if(env.GIT_BRANCH != 'master') {
 					skipStage
 					return
 				}
-				sh 'mvn-dev -P ${REPOS},dist-repo-releases,deploy-signed -pl='+module.relPathToModule("mvn-parent")
+				sh 'mvn-dev -P ${REPOS},dist-repo-releases,deploy-signed -pl='+module.relPathFrom("mvn-parent")
 			}
 			stage('Stage at Maven-Central') {
 				if(env.GIT_BRANCH != 'master') {
@@ -187,9 +188,9 @@ node {
 					return
 				}
 				// never add : -P ${REPOS} => this is ment to fail here
-				sh 'mvn-dev -P repo-releases,dist-repo-maven-central,deploy-signed -pl='+module.relPathToModule("mvn-parent")
+				sh 'mvn-dev -P repo-releases,dist-repo-maven-central,deploy-signed -pl='+module.relPathFrom("mvn-parent")
 				sshagent (credentials: ['RunedUniverse-Jenkins']) {
-					sh "git push origin $(git-create-version-tag ${ module.id() } ${ module.relPathToModule('mvn-parent') })"
+					sh "git push origin $(git-create-version-tag ${ module.id() } ${ module.relPathFrom('mvn-parent') })"
 				}
 			}
 		}

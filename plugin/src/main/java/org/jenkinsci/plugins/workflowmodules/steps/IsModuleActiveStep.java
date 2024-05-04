@@ -23,7 +23,7 @@ import org.jenkinsci.plugins.workflow.steps.StepDescriptor;
 import org.jenkinsci.plugins.workflow.steps.StepExecution;
 import org.jenkinsci.plugins.workflow.steps.SynchronousStepExecution;
 import org.jenkinsci.plugins.workflowmodules.context.WorkflowModule;
-import org.jenkinsci.plugins.workflowmodules.context.WorkflowModuleDynamicContext;
+import org.jenkinsci.plugins.workflowmodules.context.WorkflowModuleContainer;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
@@ -64,7 +64,7 @@ public class IsModuleActiveStep extends Step {
 
 		@Override
 		protected Boolean run() throws Exception {
-			final WorkflowModuleDynamicContext dynamicContext = getContext().get(WorkflowModuleDynamicContext.class);
+			final WorkflowModuleContainer dynamicContext = getContext().get(WorkflowModuleContainer.class);
 			if (dynamicContext == null)
 				return false;
 			final WorkflowModule module = dynamicContext.getModule(step.getId());
@@ -90,7 +90,7 @@ public class IsModuleActiveStep extends Step {
 
 		@Override
 		public Set<? extends Class<?>> getRequiredContext() {
-			return ImmutableSet.of(WorkflowModuleDynamicContext.class);
+			return ImmutableSet.of(WorkflowModuleContainer.class);
 		}
 
 		@Override
