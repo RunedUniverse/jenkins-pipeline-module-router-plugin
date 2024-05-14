@@ -157,7 +157,7 @@
 			<id>install</id>
 			<build>
 				<defaultGoal>
-					clean install/install]
+					clean install]
 				</defaultGoal>
 			</build>
 		</profile>
@@ -165,8 +165,7 @@
 			<id>test-junit-jupiter</id>
 			<build>
 				<defaultGoal>
-					junit-jupiter/[initialize] junit-jupiter/[test]
-				</defaultGoal>
+					<!-- junit-jupiter/[initialize] --> junit-jupiter/test] </defaultGoal>
 			</build>
 		</profile>
 		<profile>

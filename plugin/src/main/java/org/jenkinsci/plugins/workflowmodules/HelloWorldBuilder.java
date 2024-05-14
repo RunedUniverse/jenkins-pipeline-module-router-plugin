@@ -84,6 +84,7 @@ public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
 			return FormValidation.ok();
 		}
 
+		@SuppressWarnings("rawtypes")
 		@Override
 		public boolean isApplicable(Class<? extends AbstractProject> aClass) {
 			return true;

@@ -47,12 +47,12 @@
 		<execution source="override" id="default">
 			<triggers>
 				<default />
-				<active-profile id="dev-install" />
 				<active-profile id="format" />
-				<missing-profile id="install" />
-				<missing-profile id="test-junit-jupiter" />
-				<missing-profile id="deploy" />
-				<missing-profile id="deploy-signed" />
+				<active-profile id="dev-install" />
+				<active-profile id="install" />
+				<active-profile id="test-junit-jupiter" />
+				<active-profile id="deploy" />
+				<active-profile id="deploy-signed" />
 			</triggers>
 			<lifecycles>
 				<lifecycle id="help">
@@ -105,11 +105,11 @@
 									<modes>
 										<default />
 										<dev />
+										<junit-jupiter/>
 									</modes>
 								</goal>
 								<goal id="format">
 									<modes>
-										<default />
 										<dev />
 										<format />
 									</modes>
@@ -118,7 +118,6 @@
 								</goal>
 								<goal id="format">
 									<modes>
-										<default />
 										<dev />
 										<format />
 									</modes>
@@ -146,7 +145,6 @@
 								<goal id="attach-artifact">
 									<modes>
 										<default />
-										<dev />
 									</modes>
 									<groupId>org.codehaus.mojo</groupId>
 									<artifactId>build-helper-maven-plugin</artifactId>
@@ -156,7 +154,6 @@
 									<artifactId>maven-deploy-plugin</artifactId>
 									<modes>
 										<default />
-										<dev />
 									</modes>
 								</goal>
 							</goals>
@@ -169,12 +166,12 @@
 		<execution source="override" id="default">
 			<triggers>
 				<default />
-				<active-profile id="dev-install" />
 				<active-profile id="format" />
-				<missing-profile id="install" />
-				<missing-profile id="test-junit-jupiter" />
-				<missing-profile id="deploy" />
-				<missing-profile id="deploy-signed" />
+				<active-profile id="dev-install" />
+				<active-profile id="install" />
+				<active-profile id="test-junit-jupiter" />
+				<active-profile id="deploy" />
+				<active-profile id="deploy-signed" />
 			</triggers>
 			<restrictions>
 				<packaging-procedure>jar</packaging-procedure>
@@ -248,8 +245,8 @@
 									<groupId>org.apache.maven.plugins</groupId>
 									<artifactId>maven-surefire-plugin</artifactId>
 									<modes>
-										<default />
 										<dev />
+										<junit-jupiter/>
 									</modes>
 								</goal>
 							</goals>
@@ -262,12 +259,11 @@
 		<execution source="override" id="default">
 			<triggers>
 				<active-profile id="dev-install" />
-				<active-profile id="format" />
+				<active-profile id="install" />
+				<active-profile id="test-junit-jupiter" />
+				<active-profile id="deploy" />
+				<active-profile id="deploy-signed" />
 				<active-profile id="quick-build" />
-				<missing-profile id="install" />
-				<missing-profile id="test-junit-jupiter" />
-				<missing-profile id="deploy" />
-				<missing-profile id="deploy-signed" />
 			</triggers>
 			<restrictions>
 				<packaging-procedure>hpi</packaging-procedure>
@@ -413,8 +409,8 @@
 									<groupId>org.apache.maven.plugins</groupId>
 									<artifactId>maven-surefire-plugin</artifactId>
 									<modes>
-										<default />
 										<dev />
+										<junit-jupiter/>
 									</modes>
 								</goal>
 							</goals>
