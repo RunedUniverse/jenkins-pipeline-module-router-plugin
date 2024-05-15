@@ -53,20 +53,20 @@ public class WithModulesStep extends Step implements Serializable {
 		@SuppressWarnings("unused")
 		private final WithModulesStep step;
 
-		private WorkflowModuleContainer dynamicContext;
+		private WorkflowModuleContainer container;
 
 		public WithModulesExecution(StepContext context, WithModulesStep step) {
 			super(context);
 			this.step = step;
-			this.dynamicContext = new WorkflowModuleContainer();
+			this.container = new WorkflowModuleContainer();
 		}
 
 		@Override
 		public boolean start() throws Exception {
 			StepContext context = getContext();
-			this.dynamicContext.setWorkspace(context.get(FilePath.class));
+			this.container.setWorkspace(context.get(FilePath.class));
 			context.newBodyInvoker()
-					.withContext(this.dynamicContext)
+					.withContext(this.container)
 					.withCallback(BodyExecutionCallback.wrap(context))
 					.start();
 			return false;

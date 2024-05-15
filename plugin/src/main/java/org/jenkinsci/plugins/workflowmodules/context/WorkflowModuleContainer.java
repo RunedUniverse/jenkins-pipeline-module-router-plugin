@@ -33,6 +33,8 @@ import org.kohsuke.accmod.Restricted;
 import org.kohsuke.accmod.restrictions.NoExternalUse;
 
 import hudson.FilePath;
+import lombok.Getter;
+
 import static org.jenkinsci.plugins.workflowmodules.context.WorkflowModule.*;
 
 @Restricted(NoExternalUse.class)
@@ -43,6 +45,7 @@ public class WorkflowModuleContainer implements Serializable {
 
 	private final Map<String, WorkflowModule> modules = new ConcurrentHashMap<>();
 
+	@Getter
 	private FilePath workspace = null;
 	private transient Path workspaceRemote = null;
 

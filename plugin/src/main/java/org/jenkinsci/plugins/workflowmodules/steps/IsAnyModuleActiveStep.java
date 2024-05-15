@@ -51,10 +51,10 @@ public class IsAnyModuleActiveStep extends Step {
 
 		@Override
 		protected Boolean run() throws Exception {
-			final WorkflowModuleContainer dynamicContext = getContext().get(WorkflowModuleContainer.class);
-			if (dynamicContext == null)
+			final WorkflowModuleContainer container = getContext().get(WorkflowModuleContainer.class);
+			if (container == null)
 				return false;
-			return !dynamicContext.getModules(selectActive())
+			return !container.getModules(selectActive())
 					.isEmpty();
 		}
 

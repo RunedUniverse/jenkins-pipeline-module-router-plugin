@@ -15,8 +15,6 @@
  */
 package org.jenkinsci.plugins.workflowmodules.steps;
 
-import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.jenkinsci.plugins.workflow.steps.Step;
@@ -24,63 +22,82 @@ import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepDescriptor;
 import org.jenkinsci.plugins.workflow.steps.StepExecution;
 import org.jenkinsci.plugins.workflow.steps.SynchronousStepExecution;
+import org.jenkinsci.plugins.workflowmodules.context.WorkflowModule;
 import org.jenkinsci.plugins.workflowmodules.context.WorkflowModuleContainer;
+import org.jenkinsci.plugins.workflowmodules.context.cps.ModuleProxy;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
+
 import com.google.common.collect.ImmutableSet;
 
 import hudson.Extension;
+import hudson.Util;
 import lombok.Getter;
 
-import static org.jenkinsci.plugins.workflowmodules.context.WorkflowModuleContainer.*;
+public class GetModuleStep extends Step {
 
-public class IsModuleSelectionActiveStep extends Step {
+	public static final String FUNCTION_NAME = "getModule";
 
 	@Getter
-	private Set<String> selectIds = new LinkedHashSet<>(0);
+	private String id = null;
 
 	@DataBoundConstructor
-	public IsModuleSelectionActiveStep(Collection<String> selectIds) {
-		this.selectIds.addAll(selectIds);
+	public GetModuleStep() {
+	}
+
+	@DataBoundSetter
+	public void setId(String id) {
+		this.id = Util.fixEmptyAndTrim(id);
 	}
 
 	@Override
 	public StepExecution start(StepContext context) throws Exception {
-		return new IsModuleSelectionActiveExecution(context, this);
+		return new IsModuleActiveExecution(context, this);
 	}
 
-	public static class IsModuleSelectionActiveExecution extends SynchronousStepExecution<Boolean> {
+	public static class IsModuleActiveExecution extends SynchronousStepExecution<ModuleProxy> {
 
 		private static final long serialVersionUID = 1L;
 
-		private IsModuleSelectionActiveStep step;
+		private GetModuleStep step;
 
-		protected IsModuleSelectionActiveExecution(StepContext context, IsModuleSelectionActiveStep step) {
+		protected IsModuleActiveExecution(StepContext context, GetModuleStep step) {
 			super(context);
 			this.step = step;
 		}
 
 		@Override
-		protected Boolean run() throws Exception {
+		protected ModuleProxy run() throws Exception {
 			final WorkflowModuleContainer container = getContext().get(WorkflowModuleContainer.class);
 			if (container == null)
-				return false;
-			return !container.getModules(selectActive().and(selectByIds(this.step.getSelectIds())))
-					.isEmpty();
+				return null;
+			final WorkflowModule module;
+			final String moduleId = this.step.getId();
+			if (moduleId == null) {
+				module = getContext().get(WorkflowModule.class);
+			} else {
+				module = container.getModule(moduleId);
+				if (module == null) {
+					throw new IllegalStateException(String.format("Module with id »%s« is not defined!", moduleId));
+				}
+			}
+			if (module == null)
+				return null;
+			return new ModuleProxy(container, module);
 		}
-
 	}
 
 	@Extension
-	public static class IsModuleSelectionActiveDescriptor extends StepDescriptor {
+	public static class IsModuleActiveDescriptor extends StepDescriptor {
 
 		@Override
 		public String getFunctionName() {
-			return "isModuleSelectionActive";
+			return FUNCTION_NAME;
 		}
 
 		@Override
 		public String getDisplayName() {
-			return "Check if Module Selection is active";
+			return "Get active module or by Id";
 		}
 
 		@Override
@@ -92,7 +109,5 @@ public class IsModuleSelectionActiveStep extends Step {
 		public Set<? extends Class<?>> getProvidedContext() {
 			return ImmutableSet.of();
 		}
-
 	}
-
 }

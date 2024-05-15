@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jenkinsci.plugins.workflowmodules.steps;
-
-import static org.jenkinsci.plugins.workflow.cps.persistence.PersistenceContext.FLOW_NODE;
+package org.jenkinsci.plugins.workflowmodules.steps.cps;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -27,14 +25,16 @@ import org.jenkinsci.plugins.workflow.actions.ThreadNameAction;
 import org.jenkinsci.plugins.workflow.cps.CpsStepContext;
 import org.jenkinsci.plugins.workflow.cps.persistence.PersistIn;
 import org.jenkinsci.plugins.workflow.steps.BodyExecution;
-import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepExecution;
 import org.jenkinsci.plugins.workflowmodules.context.WorkflowModule;
 import org.jenkinsci.plugins.workflowmodules.context.WorkflowModuleContainer;
+import org.jenkinsci.plugins.workflowmodules.steps.ParallelResultHandler;
+import org.jenkinsci.plugins.workflowmodules.steps.PerModuleStep;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.model.TaskListener;
-import jenkins.model.CauseOfInterruption;
+
+import static org.jenkinsci.plugins.workflow.cps.persistence.PersistenceContext.FLOW_NODE;
 
 public class PerModuleExecution extends StepExecution {
 
@@ -45,7 +45,7 @@ public class PerModuleExecution extends StepExecution {
 
 	private final List<BodyExecution> bodies = new LinkedList<>();
 
-	public PerModuleExecution(final StepContext context, final PerModuleStep step) {
+	public PerModuleExecution(final CpsStepContext context, final PerModuleStep step) {
 		super(context);
 		this.step = step;
 	}
@@ -108,27 +108,6 @@ public class PerModuleExecution extends StepExecution {
 		public String getThreadName() {
 			return branchName;
 		}
-	}
-
-	/**
-	 * Used to abort a running branch body in the case of {@code failFast} taking
-	 * effect.
-	 */
-	protected static final class FailFastCause extends CauseOfInterruption {
-
-		private static final long serialVersionUID = 1L;
-
-		private final String failingBranch;
-
-		FailFastCause(String failingBranch) {
-			this.failingBranch = failingBranch;
-		}
-
-		@Override
-		public String getShortDescription() {
-			return "Failed in module " + failingBranch;
-		}
-
 	}
 
 }

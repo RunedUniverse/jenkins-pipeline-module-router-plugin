@@ -27,8 +27,8 @@ public class ModuleProxy implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private final WorkflowModuleContainer container;
-	private final WorkflowModule module;
+	protected final WorkflowModuleContainer container;
+	protected final WorkflowModule module;
 
 	public ModuleProxy(final WorkflowModuleContainer container, final WorkflowModule module) {
 		this.container = container;
@@ -80,12 +80,38 @@ public class ModuleProxy implements Serializable {
 	}
 
 	@Whitelisted
+	public String relPathFrom(ModuleProxy proxy) {
+		return this.container.relPath(proxy.module, this.module);
+	}
+
+	@Whitelisted
 	public String relPathTo(String moduleId) {
 		final WorkflowModule to = this.container.getModule(moduleId);
 		if (to == null) {
 			throw new IllegalStateException("Module with id »" + moduleId + "« not found!");
 		}
 		return this.container.relPath(this.module, to);
+	}
+
+	@Whitelisted
+	public String relPathTo(ModuleProxy proxy) {
+		return this.container.relPath(this.module, proxy.module);
+	}
+
+	@Override
+	@Whitelisted
+	public boolean equals(Object obj) {
+		if (obj instanceof ModuleProxy) {
+			ModuleProxy other = (ModuleProxy) obj;
+			return this.module.equals(other.module);
+		}
+		return super.equals(obj);
+	}
+
+	@Override
+	@Whitelisted
+	public int hashCode() {
+		return this.module.hashCode();
 	}
 
 }

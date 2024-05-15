@@ -20,6 +20,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import org.jenkinsci.plugins.workflow.cps.CpsStepContext;
 import org.jenkinsci.plugins.workflow.cps.CpsVmThreadOnly;
 import org.jenkinsci.plugins.workflow.steps.Step;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
@@ -27,6 +28,7 @@ import org.jenkinsci.plugins.workflow.steps.StepDescriptor;
 import org.jenkinsci.plugins.workflow.steps.StepExecution;
 import org.jenkinsci.plugins.workflowmodules.context.WorkflowModule;
 import org.jenkinsci.plugins.workflowmodules.context.WorkflowModuleContainer;
+import org.jenkinsci.plugins.workflowmodules.steps.cps.PerModuleExecution;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
@@ -39,6 +41,8 @@ import lombok.Getter;
 import static org.jenkinsci.plugins.workflowmodules.context.WorkflowModuleContainer.*;
 
 public class PerModuleStep extends Step {
+
+	public static final String FUNCTION_NAME = "perModule";
 
 	@Getter
 	private final Set<String> selectIds = new LinkedHashSet<>(0);
@@ -76,8 +80,15 @@ public class PerModuleStep extends Step {
 	}
 
 	@Override
-	@CpsVmThreadOnly("CPS program calls this, which is run by CpsVmThread")
 	public StepExecution start(StepContext context) throws Exception {
+		if (context instanceof CpsStepContext) {
+			return _start((CpsStepContext) context);
+		}
+		return null;
+	}
+
+	@CpsVmThreadOnly("CPS program calls this, which is run by CpsVmThread")
+	protected StepExecution _start(CpsStepContext context) {
 		return new PerModuleExecution(context, this);
 	}
 
@@ -86,7 +97,7 @@ public class PerModuleStep extends Step {
 
 		@Override
 		public String getFunctionName() {
-			return "perModule";
+			return FUNCTION_NAME;
 		}
 
 		@Override

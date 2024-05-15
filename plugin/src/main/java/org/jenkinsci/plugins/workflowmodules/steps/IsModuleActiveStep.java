@@ -64,10 +64,10 @@ public class IsModuleActiveStep extends Step {
 
 		@Override
 		protected Boolean run() throws Exception {
-			final WorkflowModuleContainer dynamicContext = getContext().get(WorkflowModuleContainer.class);
-			if (dynamicContext == null)
+			final WorkflowModuleContainer container = getContext().get(WorkflowModuleContainer.class);
+			if (container == null)
 				return false;
-			final WorkflowModule module = dynamicContext.getModule(step.getId());
+			final WorkflowModule module = container.getModule(step.getId());
 			if (module == null)
 				return false;
 			return module.active();

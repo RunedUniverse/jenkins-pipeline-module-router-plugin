@@ -15,16 +15,21 @@
  */
 package org.jenkinsci.plugins.workflowmodules.context.cps;
 
+import java.util.HashMap;
 import org.jenkinsci.plugins.workflow.cps.CpsScript;
+import org.jenkinsci.plugins.workflow.cps.DSL;
 import org.jenkinsci.plugins.workflow.cps.GlobalVariable;
-import org.jenkinsci.plugins.workflowmodules.context.WorkflowModule;
-import org.jenkinsci.plugins.workflowmodules.context.WorkflowModuleContainer;
+import org.jenkinsci.plugins.workflowmodules.steps.GetModuleStep;
+import org.jenkinsci.plugins.workflowmodules.steps.PerModuleStep;
 
 import hudson.Extension;
 import hudson.model.Run;
 
 @Extension
 public class ModuleGlobalVar extends GlobalVariable {
+
+	// See {@link CpsScript}
+	private static final String STEPS_VAR = "steps";
 
 	@Override
 	public String getName() {
@@ -38,20 +43,12 @@ public class ModuleGlobalVar extends GlobalVariable {
 		final Run<?, ?> run = script.$build();
 		if (run == null)
 			return null;
-
-		Object obj = script.invokeMethod("getContext", WorkflowModuleContainer.class);
-		WorkflowModuleContainer container = null;
-		if (obj instanceof WorkflowModuleContainer) {
-			container = (WorkflowModuleContainer) obj;
-		} else
-			return null;
-
-		obj = script.invokeMethod("getContext", WorkflowModule.class);
-		WorkflowModule module = null;
-		if (obj instanceof WorkflowModule) {
-			module = (WorkflowModule) obj;
-		} else
-			return null;
-		return new ModuleProxy(container, module);
+		final DSL dsl = (DSL) script.getProperty(STEPS_VAR);
+		final Object result = dsl.invokeMethod(GetModuleStep.FUNCTION_NAME, new HashMap<>());
+		if (result == null)
+			throw new IllegalStateException(String.format(
+					"No Module defined in current context! Make sure you call this global variable in the context of a step like '%s'",
+					PerModuleStep.FUNCTION_NAME));
+		return result;
 	}
 }

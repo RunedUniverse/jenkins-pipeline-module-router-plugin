@@ -71,7 +71,7 @@ node {
 		}
 	
 		stage('Install Maven Parent') {
-			if(!isModuleActive(id: 'mvn-parent')) {
+			if(!getModule(id: 'mvn-parent').active()) {
 				skipStage()
 				return
 			}

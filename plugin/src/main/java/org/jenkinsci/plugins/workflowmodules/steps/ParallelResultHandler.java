@@ -34,13 +34,12 @@ import org.jenkinsci.plugins.workflow.steps.BodyExecutionCallback;
 import org.jenkinsci.plugins.workflow.steps.FlowInterruptedException;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepExecution;
-import org.jenkinsci.plugins.workflowmodules.steps.PerModuleExecution.FailFastCause;
-
 import com.cloudbees.groovy.cps.Outcome;
 
 import hudson.AbortException;
 import hudson.model.Result;
 import hudson.model.TaskListener;
+import jenkins.model.CauseOfInterruption;
 
 /**
  * ParallelResultHandler derived from {@link ParallelStep.ResultHandler} by
@@ -92,7 +91,7 @@ public class ParallelResultHandler<E extends StepExecution> implements Serializa
 		return this.logger == null ? LOGGER : this.logger;
 	}
 
-	protected ParallelResultHandler.Callback callbackFor(String name) {
+	public ParallelResultHandler.Callback callbackFor(String name) {
 		this.outcomes.put(name, null);
 		return new Callback(this, name);
 	}
@@ -244,6 +243,26 @@ public class ParallelResultHandler<E extends StepExecution> implements Serializa
 				}
 			}
 			return 0;
+		}
+	}
+
+	/**
+	 * Used to abort a running branch body in the case of {@code failFast} taking
+	 * effect.
+	 */
+	protected static final class FailFastCause extends CauseOfInterruption {
+
+		private static final long serialVersionUID = 1L;
+
+		private final String failingBranch;
+
+		FailFastCause(String failingBranch) {
+			this.failingBranch = failingBranch;
+		}
+
+		@Override
+		public String getShortDescription() {
+			return "Failed in branch " + failingBranch;
 		}
 	}
 }
