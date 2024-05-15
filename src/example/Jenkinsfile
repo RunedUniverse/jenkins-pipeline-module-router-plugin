@@ -57,7 +57,7 @@ node {
 				return
 			}
 			sh "mvn-dev -P ${ REPOS } dependency:purge-local-repository -DactTransitively=false -DreResolve=false --non-recursive"
-			sh "mvn-dev -P ${ REPOS } dependency:resolve --non-recursive"
+			sh "mvn-dev -P ${ REPOS } dependency:resolve-plugins -U"
 		}
 
 		stage('Code Validation') {
@@ -147,12 +147,11 @@ node {
 				return
 			}
 			sh "mvn-dev -P ${ REPOS },toolchain-openjdk-1-8-0,build-tests"
-			try {
-				sh "mvn-dev -P ${ REPOS },toolchain-openjdk-1-8-0,test-junit-jupiter,test-system"
-			} catch (e) {
+			sh "mvn-dev --fail-never -P ${ REPOS },toolchain-openjdk-1-8-0,test-junit-jupiter,test-system"
+			// check tests, archive reports in case junit flags errors
+			junit '*/target/surefire-reports/*.xml'
+			if(currentBuild.resultIsWorseOrEqualTo('UNSTABLE')) {
 				archiveArtifacts artifacts: '*/target/surefire-reports/*.xml'
-			} finally {
-				junit '*/target/surefire-reports/*.xml'
 			}
 		}
 
@@ -182,14 +181,14 @@ node {
 					sh "mvn-dev -P ${ REPOS },dist-repo-development,deploy -pl=${ module.relPathFrom('mvn-parent') }"
 				}
 				stage('Release') {
-					if(env.GIT_BRANCH != 'master') {
+					if(currentBuild.resultIsWorseOrEqualTo('UNSTABLE') || env.GIT_BRANCH != 'master') {
 						skipStage()
 						return
 					}
 					sh "mvn-dev -P ${ REPOS },dist-repo-releases,deploy-signed -pl=${ module.relPathFrom('mvn-parent') }"
 				}
 				stage('Stage at Maven-Central') {
-					if(env.GIT_BRANCH != 'master') {
+					if(currentBuild.resultIsWorseOrEqualTo('UNSTABLE') || env.GIT_BRANCH != 'master') {
 						skipStage()
 						return
 					}
