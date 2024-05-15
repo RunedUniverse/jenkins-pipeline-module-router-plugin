@@ -33,18 +33,16 @@ import org.kohsuke.stapler.DataBoundSetter;
 import com.google.common.collect.ImmutableSet;
 
 import hudson.Extension;
+import hudson.model.TaskListener;
 import lombok.Getter;
 
 import static org.jenkinsci.plugins.workflowmodules.context.WorkflowModuleContainer.*;
 
-public class StagePerModuleStep extends Step {
+public class PerModuleStep extends Step {
 
 	@Getter
 	private final Set<String> selectIds = new LinkedHashSet<>(0);
 	private boolean _selectIds = false;
-
-	@Getter
-	private String name;
 
 	/**
 	 * should a failure in a parallel branch terminate other still executing
@@ -54,12 +52,7 @@ public class StagePerModuleStep extends Step {
 	private boolean failFast = false;
 
 	@DataBoundConstructor
-	public StagePerModuleStep() {
-	}
-
-	@DataBoundSetter
-	public void setName(String name) {
-		this.name = name;
+	public PerModuleStep() {
 	}
 
 	@DataBoundSetter
@@ -68,7 +61,7 @@ public class StagePerModuleStep extends Step {
 	}
 
 	@DataBoundSetter
-	public void setSelectedIds(Collection<String> selectedIds) {
+	public void setSelectIds(Collection<String> selectedIds) {
 		this.selectIds.addAll(selectedIds);
 		this._selectIds = true;
 	}
@@ -85,7 +78,7 @@ public class StagePerModuleStep extends Step {
 	@Override
 	@CpsVmThreadOnly("CPS program calls this, which is run by CpsVmThread")
 	public StepExecution start(StepContext context) throws Exception {
-		return new StagePerModuleExecution(context, this);
+		return new PerModuleExecution(context, this);
 	}
 
 	@Extension
@@ -93,12 +86,12 @@ public class StagePerModuleStep extends Step {
 
 		@Override
 		public String getFunctionName() {
-			return "stagePerModule";
+			return "perModule";
 		}
 
 		@Override
 		public String getDisplayName() {
-			return "Execute Body as Stage per Module";
+			return "Execute Body as Stage per Module in parallel";
 		}
 
 		@Override
@@ -108,7 +101,7 @@ public class StagePerModuleStep extends Step {
 
 		@Override
 		public Set<? extends Class<?>> getRequiredContext() {
-			return ImmutableSet.of(WorkflowModuleContainer.class);
+			return ImmutableSet.of(TaskListener.class, WorkflowModuleContainer.class);
 		}
 
 		@Override

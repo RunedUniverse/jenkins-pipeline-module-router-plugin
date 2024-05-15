@@ -26,7 +26,6 @@ import org.jenkinsci.plugins.workflow.actions.LabelAction;
 import org.jenkinsci.plugins.workflow.actions.ThreadNameAction;
 import org.jenkinsci.plugins.workflow.cps.CpsStepContext;
 import org.jenkinsci.plugins.workflow.cps.persistence.PersistIn;
-import org.jenkinsci.plugins.workflow.graph.FlowNode;
 import org.jenkinsci.plugins.workflow.steps.BodyExecution;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepExecution;
@@ -37,26 +36,23 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.model.TaskListener;
 import jenkins.model.CauseOfInterruption;
 
-public class StagePerModuleExecution extends StepExecution {
+public class PerModuleExecution extends StepExecution {
 
 	private static final long serialVersionUID = 1L;
-	private static final Logger LOGGER = Logger.getLogger(StagePerModuleExecution.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(PerModuleExecution.class.getName());
 
-	private transient StagePerModuleStep step;
+	private transient PerModuleStep step;
 
 	private final List<BodyExecution> bodies = new LinkedList<>();
 
-	public StagePerModuleExecution(final StepContext context, final StagePerModuleStep step) {
+	public PerModuleExecution(final StepContext context, final PerModuleStep step) {
 		super(context);
 		this.step = step;
 	}
 
 	@Override
 	public boolean start() throws Exception {
-		final FlowNode node = getContext().get(FlowNode.class);
 		final CpsStepContext cps = (CpsStepContext) getContext();
-
-		node.addAction(new LabelAction(step.getName()));
 
 		if (!getContext().hasBody()) {
 			cps.get(TaskListener.class)
@@ -66,9 +62,9 @@ public class StagePerModuleExecution extends StepExecution {
 			return true;
 		}
 
-		WorkflowModuleContainer container = cps.get(WorkflowModuleContainer.class);
+		final WorkflowModuleContainer container = cps.get(WorkflowModuleContainer.class);
 
-		ParallelResultHandler<StagePerModuleExecution> r = new ParallelResultHandler<>(cps, this, step.isFailFast())
+		final ParallelResultHandler<PerModuleExecution> r = new ParallelResultHandler<>(cps, this, step.isFailFast())
 				.setLogger(LOGGER);
 
 		for (WorkflowModule module : container.getModules(this.step.filter())) {
@@ -104,7 +100,7 @@ public class StagePerModuleExecution extends StepExecution {
 
 		@Override
 		public String getDisplayName() {
-			return "Branch: " + branchName;
+			return "Module: " + branchName;
 		}
 
 		@NonNull
@@ -130,7 +126,7 @@ public class StagePerModuleExecution extends StepExecution {
 
 		@Override
 		public String getShortDescription() {
-			return "Failed in branch " + failingBranch;
+			return "Failed in module " + failingBranch;
 		}
 
 	}

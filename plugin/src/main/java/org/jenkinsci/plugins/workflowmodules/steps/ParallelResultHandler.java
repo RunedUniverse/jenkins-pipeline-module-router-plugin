@@ -34,7 +34,7 @@ import org.jenkinsci.plugins.workflow.steps.BodyExecutionCallback;
 import org.jenkinsci.plugins.workflow.steps.FlowInterruptedException;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepExecution;
-import org.jenkinsci.plugins.workflowmodules.steps.StagePerModuleExecution.FailFastCause;
+import org.jenkinsci.plugins.workflowmodules.steps.PerModuleExecution.FailFastCause;
 
 import com.cloudbees.groovy.cps.Outcome;
 
