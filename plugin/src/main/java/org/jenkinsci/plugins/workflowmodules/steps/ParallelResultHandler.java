@@ -59,7 +59,7 @@ public class ParallelResultHandler<E extends StepExecution> implements Serializa
 	protected final E stepExecution;
 	protected final boolean failFast;
 
-	private Logger logger = null;
+	private transient Logger logger = null;
 	/** Have we called stop on the StepExecution? */
 	private boolean stopSent = false;
 	/**

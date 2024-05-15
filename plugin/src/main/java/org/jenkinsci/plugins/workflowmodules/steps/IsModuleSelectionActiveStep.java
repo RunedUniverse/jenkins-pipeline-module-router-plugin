@@ -26,8 +26,6 @@ import org.jenkinsci.plugins.workflow.steps.StepExecution;
 import org.jenkinsci.plugins.workflow.steps.SynchronousStepExecution;
 import org.jenkinsci.plugins.workflowmodules.context.WorkflowModuleContainer;
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.DataBoundSetter;
-
 import com.google.common.collect.ImmutableSet;
 
 import hudson.Extension;
@@ -38,15 +36,11 @@ import static org.jenkinsci.plugins.workflowmodules.context.WorkflowModuleContai
 public class IsModuleSelectionActiveStep extends Step {
 
 	@Getter
-	private Set<String> selectedIds = new LinkedHashSet<>(0);
+	private Set<String> selectIds = new LinkedHashSet<>(0);
 
 	@DataBoundConstructor
-	public IsModuleSelectionActiveStep() {
-	}
-
-	@DataBoundSetter
-	public void setSelectedIds(Collection<String> selectedIds) {
-		this.selectedIds.addAll(selectedIds);
+	public IsModuleSelectionActiveStep(Collection<String> selectIds) {
+		this.selectIds.addAll(selectIds);
 	}
 
 	@Override
@@ -70,7 +64,7 @@ public class IsModuleSelectionActiveStep extends Step {
 			final WorkflowModuleContainer dynamicContext = getContext().get(WorkflowModuleContainer.class);
 			if (dynamicContext == null)
 				return false;
-			return !dynamicContext.getModules(selectActive().and(selectByIds(this.step.getSelectedIds())))
+			return !dynamicContext.getModules(selectActive().and(selectByIds(this.step.getSelectIds())))
 					.isEmpty();
 		}
 

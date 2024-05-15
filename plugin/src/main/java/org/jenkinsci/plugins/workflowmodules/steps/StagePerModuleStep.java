@@ -41,7 +41,7 @@ public class StagePerModuleStep extends Step {
 
 	@Getter
 	private final Set<String> selectIds = new LinkedHashSet<>(0);
-	private boolean _selectedIds = false;
+	private boolean _selectIds = false;
 
 	@Getter
 	private String name;
@@ -70,13 +70,13 @@ public class StagePerModuleStep extends Step {
 	@DataBoundSetter
 	public void setSelectedIds(Collection<String> selectedIds) {
 		this.selectIds.addAll(selectedIds);
-		this._selectedIds = true;
+		this._selectIds = true;
 	}
 
 	public Predicate<WorkflowModule> filter() {
 		Predicate<WorkflowModule> filter = selectAll();
 		// possibly add more checks later
-		if (_selectedIds) {
+		if (_selectIds) {
 			filter = filter.and(selectByIds(getSelectIds()));
 		}
 		return filter;
@@ -99,6 +99,11 @@ public class StagePerModuleStep extends Step {
 		@Override
 		public String getDisplayName() {
 			return "Execute Body as Stage per Module";
+		}
+
+		@Override
+		public boolean takesImplicitBlockArgument() {
+			return true;
 		}
 
 		@Override

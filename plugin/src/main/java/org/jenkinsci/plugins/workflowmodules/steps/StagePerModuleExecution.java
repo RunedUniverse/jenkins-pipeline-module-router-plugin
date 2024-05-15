@@ -26,6 +26,7 @@ import org.jenkinsci.plugins.workflow.actions.LabelAction;
 import org.jenkinsci.plugins.workflow.actions.ThreadNameAction;
 import org.jenkinsci.plugins.workflow.cps.CpsStepContext;
 import org.jenkinsci.plugins.workflow.cps.persistence.PersistIn;
+import org.jenkinsci.plugins.workflow.graph.FlowNode;
 import org.jenkinsci.plugins.workflow.steps.BodyExecution;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepExecution;
@@ -52,7 +53,11 @@ public class StagePerModuleExecution extends StepExecution {
 
 	@Override
 	public boolean start() throws Exception {
-		CpsStepContext cps = (CpsStepContext) getContext();
+		final FlowNode node = getContext().get(FlowNode.class);
+		final CpsStepContext cps = (CpsStepContext) getContext();
+
+		node.addAction(new LabelAction(step.getName()));
+
 		if (!getContext().hasBody()) {
 			cps.get(TaskListener.class)
 					.getLogger()

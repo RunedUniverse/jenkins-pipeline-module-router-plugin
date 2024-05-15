@@ -31,6 +31,7 @@ import com.google.common.collect.ImmutableSet;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.FilePath;
+import hudson.model.TaskListener;
 
 public class WithModulesStep extends Step implements Serializable {
 
@@ -94,7 +95,7 @@ public class WithModulesStep extends Step implements Serializable {
 
 		@Override
 		public Set<? extends Class<?>> getRequiredContext() {
-			return ImmutableSet.of(FilePath.class);
+			return ImmutableSet.of(TaskListener.class, FilePath.class);
 		}
 
 		@Override

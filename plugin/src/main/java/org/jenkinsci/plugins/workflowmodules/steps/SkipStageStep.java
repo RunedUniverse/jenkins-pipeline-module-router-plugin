@@ -29,6 +29,7 @@ import org.jenkinsci.plugins.workflow.steps.Step;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepDescriptor;
 import org.jenkinsci.plugins.workflow.steps.StepExecution;
+import org.jenkinsci.plugins.workflow.steps.SynchronousStepExecution;
 import org.jenkinsci.plugins.workflow.support.steps.StageStep;
 import org.kohsuke.stapler.DataBoundConstructor;
 
@@ -84,7 +85,7 @@ public class SkipStageStep extends Step {
 		}
 	}
 
-	public static class SkipStageExecution extends StepExecution {
+	public static class SkipStageExecution extends SynchronousStepExecution<Void> {
 
 		private static final long serialVersionUID = 1L;
 
@@ -93,22 +94,22 @@ public class SkipStageStep extends Step {
 		}
 
 		@Override
-		public boolean start() throws Exception {
+		protected Void run() throws Exception {
 			StepContext context = getContext();
 			FlowNode flowNode = null;
 			try {
 				flowNode = context.get(FlowNode.class);
 			} catch (IOException | InterruptedException e) {
 				context.onFailure(e);
-				return true;
+				return null;
 			}
 			flowNode = getStage(flowNode);
 			if (flowNode == null) {
 				context.onFailure(new NullPointerException("skipStage is not inside a stage!"));
-				return true;
+				return null;
 			}
 			addTagToFlowNode(flowNode, "STAGE_STATUS", "SKIPPED_FOR_CONDITIONAL");
-			return true;
+			return null;
 		}
 
 	}

@@ -17,6 +17,7 @@ package org.jenkinsci.plugins.workflowmodules.context;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -43,7 +44,20 @@ public class WorkflowModuleContainer implements Serializable {
 	private final Map<String, WorkflowModule> modules = new ConcurrentHashMap<>();
 
 	private FilePath workspace = null;
-	private Path workspaceRemote = null;
+	private transient Path workspaceRemote = null;
+
+	protected Path getWorkspaceRemote() {
+		if (this.workspaceRemote != null)
+			return this.workspaceRemote;
+		try {
+			this.workspaceRemote = Paths.get(this.workspace.absolutize()
+					.getRemote())
+					.normalize();
+		} catch (IOException | InterruptedException e) {
+			LOGGER.warning("Invalid workspace path");
+		}
+		return this.workspaceRemote;
+	}
 
 	public void setWorkspace(FilePath workspace) {
 		this.workspace = workspace;
@@ -53,7 +67,7 @@ public class WorkflowModuleContainer implements Serializable {
 		}
 		try {
 			this.workspaceRemote = Paths.get(workspace.absolutize()
-					.readToString())
+					.getRemote())
 					.normalize();
 		} catch (IOException | InterruptedException e) {
 			LOGGER.warning("Invalid workspace path");
@@ -77,13 +91,14 @@ public class WorkflowModuleContainer implements Serializable {
 	}
 
 	public boolean isPathWorkspaceDescendant(String rawPath) {
-		if (this.workspaceRemote == null) {
+		final Path wsRemote = getWorkspaceRemote();
+		if (wsRemote == null) {
 			LOGGER.warning("Invalid workspace path (workspace == null)");
 			return false;
 		}
 		return Paths.get(rawPath)
 				.normalize()
-				.startsWith(this.workspaceRemote);
+				.startsWith(wsRemote);
 	}
 
 	public Set<WorkflowModule> getModules(Predicate<WorkflowModule> filter) {
@@ -108,13 +123,16 @@ public class WorkflowModuleContainer implements Serializable {
 			return null;
 		try {
 			Path fromPath = Paths.get(from.path()
-					.readToString());
+					.getRemote());
 			Path toPath = Paths.get(to.path()
-					.readToString());
+					.getRemote());
 
-			return fromPath.relativize(toPath)
+			final String relPath = fromPath.relativize(toPath)
 					.toString();
-		} catch (IOException | InterruptedException e) {
+			if (relPath.isEmpty())
+				return ".";
+			return relPath;
+		} catch (InvalidPathException e) {
 			LOGGER.severe("Failed to resolve Paths!\n" + e.getMessage());
 			e.printStackTrace();
 		}

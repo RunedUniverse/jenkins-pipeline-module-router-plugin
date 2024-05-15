@@ -50,6 +50,7 @@ public class AddModuleStep extends Step {
 	@DataBoundConstructor
 	public AddModuleStep(String id, String path) {
 		this.id = id;
+		this.path = path;
 	}
 
 	@DataBoundSetter
@@ -64,16 +65,16 @@ public class AddModuleStep extends Step {
 
 	@Override
 	public StepExecution start(StepContext context) throws Exception {
-		return new IsModuleActiveExecution(context, this);
+		return new AddModuleExecution(context, this);
 	}
 
-	public static class IsModuleActiveExecution extends SynchronousStepExecution<Void> {
+	public static class AddModuleExecution extends SynchronousStepExecution<Void> {
 
 		private static final long serialVersionUID = 1L;
 
 		private AddModuleStep step;
 
-		protected IsModuleActiveExecution(StepContext context, AddModuleStep step) {
+		protected AddModuleExecution(StepContext context, AddModuleStep step) {
 			super(context);
 			this.step = step;
 		}
@@ -84,7 +85,7 @@ public class AddModuleStep extends Step {
 			// clean the path + resolve current path from pushd
 			final String path = dir.child(this.step.getPath())
 					.absolutize()
-					.readToString();
+					.getRemote();
 			final WorkflowModuleContainer container = getContext().get(WorkflowModuleContainer.class);
 			if (container == null)
 				return null;
@@ -97,7 +98,7 @@ public class AddModuleStep extends Step {
 	}
 
 	@Extension
-	public static class IsModuleActiveDescriptor extends StepDescriptor {
+	public static class AddModuleDescriptor extends StepDescriptor {
 
 		@Override
 		public String getFunctionName() {
