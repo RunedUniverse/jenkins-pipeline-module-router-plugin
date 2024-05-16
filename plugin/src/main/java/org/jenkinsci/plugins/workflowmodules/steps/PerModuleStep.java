@@ -16,7 +16,6 @@
 package org.jenkinsci.plugins.workflowmodules.steps;
 
 import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -28,6 +27,7 @@ import org.jenkinsci.plugins.workflow.steps.StepDescriptor;
 import org.jenkinsci.plugins.workflow.steps.StepExecution;
 import org.jenkinsci.plugins.workflowmodules.context.WorkflowModule;
 import org.jenkinsci.plugins.workflowmodules.context.WorkflowModuleContainer;
+import org.jenkinsci.plugins.workflowmodules.context.WorkflowModuleSelectorBuilder;
 import org.jenkinsci.plugins.workflowmodules.steps.cps.PerModuleExecution;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
@@ -38,22 +38,18 @@ import hudson.Extension;
 import hudson.model.TaskListener;
 import lombok.Getter;
 
-import static org.jenkinsci.plugins.workflowmodules.context.WorkflowModuleContainer.*;
-
 public class PerModuleStep extends Step {
 
 	public static final String FUNCTION_NAME = "perModule";
 
-	@Getter
-	private final Set<String> selectIds = new LinkedHashSet<>(0);
-	private boolean _selectIds = false;
+	protected final WorkflowModuleSelectorBuilder builder = new WorkflowModuleSelectorBuilder();
 
 	/**
 	 * should a failure in a parallel branch terminate other still executing
 	 * branches.
 	 */
 	@Getter
-	private boolean failFast = false;
+	protected boolean failFast = false;
 
 	@DataBoundConstructor
 	public PerModuleStep() {
@@ -65,18 +61,22 @@ public class PerModuleStep extends Step {
 	}
 
 	@DataBoundSetter
-	public void setSelectIds(Collection<String> selectedIds) {
-		this.selectIds.addAll(selectedIds);
-		this._selectIds = true;
+	public void setWithIds(Collection<String> ids) {
+		this.builder.setWithIds(ids);
+	}
+
+	@DataBoundSetter
+	public void setWithTags(Collection<String> tags) {
+		this.builder.setWithTags(tags);
+	}
+
+	@DataBoundSetter
+	public void setWithTagIn(Collection<String> tags) {
+		this.builder.setWithTagIn(tags);
 	}
 
 	public Predicate<WorkflowModule> filter() {
-		Predicate<WorkflowModule> filter = selectAll();
-		// possibly add more checks later
-		if (_selectIds) {
-			filter = filter.and(selectByIds(getSelectIds()));
-		}
-		return filter;
+		return this.builder.filter();
 	}
 
 	@Override

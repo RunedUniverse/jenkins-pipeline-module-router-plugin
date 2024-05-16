@@ -30,7 +30,7 @@
 	<version>${major-version}.${minor-version}.${artifact-version}</version>
 	<packaging>pom</packaging>
 
-	<name>Jenkins - Workflow Modules Plugin - Bill of Sources</name>
+	<name>Jenkins Workflow Modules Plugin - Bill of Sources</name>
 	<url>https://github.com/RunedUniverse/jenkins-workflow-modules-plugin</url>
 	<inceptionYear>2024</inceptionYear>
 

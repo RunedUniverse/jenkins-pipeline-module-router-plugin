@@ -16,6 +16,8 @@
 package org.jenkinsci.plugins.workflowmodules.context.cps;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Set;
 
 import org.jenkinsci.plugins.scriptsecurity.sandbox.whitelists.Whitelisted;
 import org.jenkinsci.plugins.workflowmodules.context.WorkflowModule;
@@ -58,6 +60,53 @@ public class ModuleProxy implements Serializable {
 	@Whitelisted
 	public void rename(String name) {
 		this.module.rename(name);
+	}
+
+	@Whitelisted
+	public Set<String> tags() {
+		return this.module.tags();
+	}
+
+	@Whitelisted
+	public boolean hasTag(String tag) {
+		return this.module.tags()
+				.contains(tag);
+	}
+
+	@Whitelisted
+	public boolean hasTags(Collection<String> tags) {
+		return this.module.tags()
+				.containsAll(tags);
+	}
+
+	@Whitelisted
+	public void addTag(String tag) {
+		this.module.tags()
+				.add(tag);
+	}
+
+	@Whitelisted
+	public void addTags(Collection<String> tags) {
+		this.module.tags()
+				.addAll(tags);
+	}
+
+	@Whitelisted
+	public void removeTag(String tag) {
+		this.module.tags()
+				.remove(tag);
+	}
+
+	@Whitelisted
+	public void removeTags(Collection<String> tags) {
+		this.module.tags()
+				.removeAll(tags);
+	}
+
+	@Whitelisted
+	public void clearTags() {
+		this.module.tags()
+				.clear();
 	}
 
 	@Whitelisted

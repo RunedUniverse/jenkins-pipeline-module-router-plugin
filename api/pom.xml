@@ -30,7 +30,7 @@
 	<version>${major-version}.${minor-version}.${artifact-version}</version>
 	<packaging>jar</packaging>
 
-	<name>Jenkins - Workflow Modules Plugin - API</name>
+	<name>Jenkins Workflow Modules Plugin - API</name>
 	<url>https://github.com/RunedUniverse/jenkins-workflow-modules-plugin</url>
 	<inceptionYear>2024</inceptionYear>
 

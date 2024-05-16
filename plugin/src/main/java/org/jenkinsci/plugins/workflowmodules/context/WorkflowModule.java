@@ -16,6 +16,8 @@
 package org.jenkinsci.plugins.workflowmodules.context;
 
 import java.io.Serializable;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import hudson.FilePath;
 import hudson.Util;
@@ -27,6 +29,18 @@ public class WorkflowModule implements Serializable {
 
 	private final String id;
 	private final String rawPath;
+	private final Set<String> tags = new LinkedHashSet<>() {
+
+		private static final long serialVersionUID = 1L;
+
+		public boolean add(String tag) {
+			tag = valTag(tag);
+			if (tag == null)
+				return false;
+			return super.add(tag);
+		}
+
+	};
 
 	private String name;
 	@Setter
@@ -60,6 +74,10 @@ public class WorkflowModule implements Serializable {
 		this.name = valName(name);
 	}
 
+	public Set<String> tags() {
+		return this.tags;
+	}
+
 	public Boolean active() {
 		return this.active;
 	}
@@ -85,6 +103,10 @@ public class WorkflowModule implements Serializable {
 	}
 
 	public static String valName(String name) {
+		return Util.fixEmptyAndTrim(name);
+	}
+
+	public static String valTag(String name) {
 		return Util.fixEmptyAndTrim(name);
 	}
 

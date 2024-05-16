@@ -15,6 +15,8 @@
  */
 package org.jenkinsci.plugins.workflowmodules.steps;
 
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.jenkinsci.plugins.workflow.steps.Step;
@@ -45,6 +47,9 @@ public class AddModuleStep extends Step {
 	private String name = null;
 
 	@Getter
+	private Set<String> tags = new LinkedHashSet<>();
+
+	@Getter
 	private Boolean active = true;
 
 	@DataBoundConstructor
@@ -56,6 +61,11 @@ public class AddModuleStep extends Step {
 	@DataBoundSetter
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@DataBoundSetter
+	public void setTags(Collection<String> tags) {
+		this.tags.addAll(tags);
 	}
 
 	@DataBoundSetter
@@ -91,10 +101,11 @@ public class AddModuleStep extends Step {
 				return null;
 			final WorkflowModule module = container.createModule(this.step.getId(), path);
 			module.rename(this.step.getName());
+			module.tags()
+					.addAll(this.step.getTags());
 			module.activate(this.step.getActive());
 			return null;
 		}
-
 	}
 
 	@Extension
@@ -119,7 +130,5 @@ public class AddModuleStep extends Step {
 		public Set<? extends Class<?>> getProvidedContext() {
 			return ImmutableSet.of();
 		}
-
 	}
-
 }

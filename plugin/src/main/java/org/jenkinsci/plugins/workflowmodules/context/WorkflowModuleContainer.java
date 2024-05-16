@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -117,6 +116,29 @@ public class WorkflowModuleContainer implements Serializable {
 		return values;
 	}
 
+	public boolean trueForAllModules(Predicate<WorkflowModule> filter) {
+		final Set<WorkflowModule> values = new LinkedHashSet<>(this.modules.values());
+		if (filter == null)
+			return false;
+		filter = filter.negate();
+		for (WorkflowModule module : values) {
+			if (filter.test(module))
+				return false;
+		}
+		return true;
+	}
+
+	public boolean trueForAnyModules(Predicate<WorkflowModule> filter) {
+		final Set<WorkflowModule> values = new LinkedHashSet<>(this.modules.values());
+		if (filter == null)
+			return false;
+		for (WorkflowModule module : values) {
+			if (filter.test(module))
+				return true;
+		}
+		return false;
+	}
+
 	public WorkflowModule getModule(String id) {
 		return this.modules.get(valId(id));
 	}
@@ -140,17 +162,5 @@ public class WorkflowModuleContainer implements Serializable {
 			e.printStackTrace();
 		}
 		return null;
-	}
-
-	public static Predicate<WorkflowModule> selectAll() {
-		return m -> true;
-	}
-
-	public static Predicate<WorkflowModule> selectActive() {
-		return m -> m.active();
-	}
-
-	public static Predicate<WorkflowModule> selectByIds(Collection<String> ids) {
-		return m -> ids == null ? false : ids.contains(m.id());
 	}
 }

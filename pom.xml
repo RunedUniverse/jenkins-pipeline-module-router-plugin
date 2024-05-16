@@ -31,7 +31,7 @@
 	<version>0.0.0</version>
 	<packaging>pom</packaging>
 
-	<name>Jenkins - Workflow Modules Plugin - Parent</name>
+	<name>Jenkins Workflow Modules Plugin - Parent</name>
 	<description>Jenkins Plugin to enable selective building of multiple
 		modules(projects) stored in the same pipeline (repository) </description>
 	<url>https://github.com/RunedUniverse/jenkins-pipeline-module-router-plugin</url>
