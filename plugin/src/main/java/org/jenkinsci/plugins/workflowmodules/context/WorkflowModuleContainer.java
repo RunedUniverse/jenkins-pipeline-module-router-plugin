@@ -86,19 +86,19 @@ public class WorkflowModuleContainer implements Serializable {
 		}
 		this.modules.put(id, module = new WorkflowModule(id, path));
 		if (!isPathWorkspaceDescendant(path)) {
-			throw new IllegalStateException("Module »path« is not descendant of the current node!");
+			throw new IllegalStateException("Module »path« is not a descendant of the current node!");
 		}
-		module.setPath(this.workspace.child(path));
+		module.setFilePath(this.workspace.child(path));
 		return module;
 	}
 
-	public boolean isPathWorkspaceDescendant(String rawPath) {
+	public boolean isPathWorkspaceDescendant(String path) {
 		final Path wsRemote = getWorkspaceRemote();
 		if (wsRemote == null) {
 			LOGGER.warning("Invalid workspace path (workspace == null)");
 			return false;
 		}
-		return Paths.get(rawPath)
+		return Paths.get(path)
 				.normalize()
 				.startsWith(wsRemote);
 	}
@@ -147,9 +147,9 @@ public class WorkflowModuleContainer implements Serializable {
 		if (from == null || to == null)
 			return null;
 		try {
-			Path fromPath = Paths.get(from.path()
+			Path fromPath = Paths.get(from.filePath()
 					.getRemote());
-			Path toPath = Paths.get(to.path()
+			Path toPath = Paths.get(to.filePath()
 					.getRemote());
 
 			final String relPath = fromPath.relativize(toPath)

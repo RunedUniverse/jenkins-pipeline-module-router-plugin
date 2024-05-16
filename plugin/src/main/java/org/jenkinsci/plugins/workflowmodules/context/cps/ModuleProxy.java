@@ -43,13 +43,13 @@ public class ModuleProxy implements Serializable {
 	}
 
 	@Whitelisted
-	public String rawPath() {
-		return this.module.rawPath();
+	public String path() {
+		return this.module.path();
 	}
 
 	@Whitelisted
-	public FilePath path() {
-		return this.module.path();
+	public FilePath filePath() {
+		return this.module.filePath();
 	}
 
 	@Whitelisted

@@ -45,7 +45,6 @@ public class CheckAllModulesStep extends Step {
 
 	protected final WorkflowModuleSelectorBuilder builder = new WorkflowModuleSelectorBuilder();
 
-	@Getter
 	protected String match = null;
 	@Getter
 	protected boolean _match = false;
@@ -54,10 +53,13 @@ public class CheckAllModulesStep extends Step {
 	public CheckAllModulesStep() {
 	}
 
+	public String getMatch() {
+		return this.match == null ? MATCH_ANY : match.toUpperCase();
+	}
+
 	@DataBoundSetter
 	public void setMatch(String match) {
-		match = Util.fixEmptyAndTrim(match);
-		this.match = match == null ? MATCH_ANY : match.toUpperCase();
+		this.match = Util.fixEmptyAndTrim(match);
 		this._match = true;
 	}
 

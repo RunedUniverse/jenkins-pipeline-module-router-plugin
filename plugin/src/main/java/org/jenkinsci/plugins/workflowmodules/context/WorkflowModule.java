@@ -28,7 +28,7 @@ public class WorkflowModule implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private final String id;
-	private final String rawPath;
+	private final String path;
 	private final Set<String> tags = new LinkedHashSet<>() {
 
 		private static final long serialVersionUID = 1L;
@@ -44,24 +44,24 @@ public class WorkflowModule implements Serializable {
 
 	private String name;
 	@Setter
-	private FilePath path;
+	private FilePath filePath;
 	private Boolean active = true;
 
 	public WorkflowModule(final String id, final String path) {
 		this.id = valId(id);
-		this.rawPath = valPath(path);
+		this.path = valPath(path);
 	}
 
 	public String id() {
 		return this.id;
 	}
 
-	public String rawPath() {
-		return this.rawPath;
+	public String path() {
+		return this.path;
 	}
 
-	public FilePath path() {
-		return this.path;
+	public FilePath filePath() {
+		return this.filePath;
 	}
 
 	public String name() {
