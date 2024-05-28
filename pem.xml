@@ -258,6 +258,7 @@
 
 		<execution source="override" id="default">
 			<triggers>
+				<default/>
 				<active-profile id="dev-install" />
 				<active-profile id="install" />
 				<active-profile id="test-junit-jupiter" />
