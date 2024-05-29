@@ -15,6 +15,7 @@
  */
 package org.jenkinsci.plugins.workflowmodules.steps;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -35,7 +36,9 @@ import hudson.Extension;
 import hudson.FilePath;
 import lombok.Getter;
 
-public class AddModuleStep extends Step {
+public class AddModuleStep extends Step implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Getter
 	private String id;

@@ -111,7 +111,9 @@ public class WorkflowModule implements Serializable {
 	}
 
 	public static Boolean valActive(Boolean value) {
-		return value == null ? false : value;
+		if (value == null)
+			return false;
+		return value;
 	}
 
 }

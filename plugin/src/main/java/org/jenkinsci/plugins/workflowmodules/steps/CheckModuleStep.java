@@ -15,6 +15,7 @@
  */
 package org.jenkinsci.plugins.workflowmodules.steps;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -37,7 +38,9 @@ import lombok.Getter;
 
 import static org.jenkinsci.plugins.workflowmodules.context.WorkflowModule.*;
 
-public class CheckModuleStep extends Step {
+public class CheckModuleStep extends Step implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	public static final String FUNCTION_NAME = "checkModule";
 

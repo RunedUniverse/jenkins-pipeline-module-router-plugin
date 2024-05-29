@@ -15,6 +15,7 @@
  */
 package org.jenkinsci.plugins.workflowmodules.steps;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import org.jenkinsci.plugins.workflow.steps.Step;
@@ -34,7 +35,9 @@ import hudson.Extension;
 import hudson.Util;
 import lombok.Getter;
 
-public class GetModuleStep extends Step {
+public class GetModuleStep extends Step implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	public static final String FUNCTION_NAME = "getModule";
 

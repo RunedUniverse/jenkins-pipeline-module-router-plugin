@@ -23,10 +23,12 @@ import org.jenkinsci.plugins.workflowmodules.steps.GetModuleStep;
 import org.jenkinsci.plugins.workflowmodules.steps.PerModuleStep;
 
 import hudson.Extension;
-import hudson.model.Run;
 
 @Extension
 public class ModuleGlobalVar extends GlobalVariable {
+
+	public static final String EX_NO_CPS_SCRIPT = "CpsScript not defined! Make sure to only use this 'global variable' inside a Jenkinsfile script utilizing a Groovy CPS context!";
+	public static final String EX_NO_MODULE_IN_CONTEXT = "No Module defined in current context! Make sure you call this global variable in the context of a step like '%s'";
 
 	// See {@link CpsScript}
 	private static final String STEPS_VAR = "steps";
@@ -39,16 +41,11 @@ public class ModuleGlobalVar extends GlobalVariable {
 	@Override
 	public Object getValue(CpsScript script) throws Exception {
 		if (script == null)
-			return null;
-		final Run<?, ?> run = script.$build();
-		if (run == null)
-			return null;
+			throw new IllegalStateException(EX_NO_CPS_SCRIPT);
 		final DSL dsl = (DSL) script.getProperty(STEPS_VAR);
 		final Object result = dsl.invokeMethod(GetModuleStep.FUNCTION_NAME, new HashMap<>());
 		if (result == null)
-			throw new IllegalStateException(String.format(
-					"No Module defined in current context! Make sure you call this global variable in the context of a step like '%s'",
-					PerModuleStep.FUNCTION_NAME));
+			throw new IllegalStateException(String.format(EX_NO_MODULE_IN_CONTEXT, PerModuleStep.FUNCTION_NAME));
 		return result;
 	}
 }

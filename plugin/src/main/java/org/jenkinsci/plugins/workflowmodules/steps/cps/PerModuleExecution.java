@@ -41,7 +41,7 @@ public class PerModuleExecution extends StepExecution {
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(PerModuleExecution.class.getName());
 
-	private transient PerModuleStep step;
+	private PerModuleStep step;
 
 	private final List<BodyExecution> bodies = new LinkedList<>();
 
